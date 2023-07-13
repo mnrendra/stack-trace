@@ -1,5 +1,14 @@
-const main = (): string => {
-  return 'Hello, World!'
-}
+import type { CallSite } from '@types'
 
-export default main
+export const defaultValue = (): CallSite[] => ([
+  expect.any(Object),
+  expect.any(Object),
+  expect.any(Object),
+  expect.any(Object),
+  expect.any(Object),
+  expect.any(Object),
+  expect.any(Object),
+  expect.any(Object),
+  expect.any(Object),
+  expect.any(Object)
+])
