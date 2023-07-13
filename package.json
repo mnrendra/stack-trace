@@ -1,14 +1,7 @@
 {
   "name": "@mnrendra/stack-trace",
   "version": "0.0.0-development",
-  "description": "Stack trace of CallSite objects.",
-  "keywords": [
-    "stack",
-    "trace",
-    "stack trace",
-    "stack-trace",
-    "callsite"
-  ],
+  "description": "A utility that enables stack tracing of the `NodeJs.CallSite` object, allowing dynamic tracing of invocations.",
   "private": false,
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -52,5 +45,40 @@
     "semantic-release": "^21.0.7",
     "ts-jest": "^29.1.1",
     "typescript": "^5.1.6"
-  }
+  },
+  "keywords": [
+    "stack",
+    "stacks",
+    "trace",
+    "traces",
+    "tracing",
+    "tracer",
+    "stack trace",
+    "stack traces",
+    "stack tracing",
+    "stack tracer",
+    "stacks trace",
+    "stacks traces",
+    "stacks tracing",
+    "stacks tracer",
+    "stack-trace",
+    "stack-traces",
+    "stack-tracing",
+    "stack-tracer",
+    "stacks-trace",
+    "stacks-traces",
+    "stacks-tracing",
+    "stacks-tracer",
+    "v8",
+    "callsite",
+    "callsites",
+    "CallSite",
+    "v8 callsite",
+    "v8 callsites",
+    "v8 CallSite",
+    "NodeJs.CallSite",
+    "caller",
+    "function caller",
+    "method caller"
+  ]
 }

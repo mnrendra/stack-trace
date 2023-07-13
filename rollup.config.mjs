@@ -16,7 +16,7 @@ export default [
         sourcemap: true
       }
     ],
-    plugins: esbuild()
+    plugins: esbuild({ minify: true })
   },
   {
     input: 'src/index.ts',
