@@ -1,19 +1,20 @@
-import { stubs } from '../tests'
+import main from '@tests/stubs/main'
+
 import { stackTrace } from '.'
 
-describe('Test the root `index`!', () => {
-  describe('Test `stackTrace` from the `exports`!', () => {
+describe('Test all features:', () => {
+  describe('Test `stackTrace` feature:', () => {
     it('Should return the default value (an array of `NodeJs.CallSite` objects!) when given an empty argument!', () => {
       const result = stackTrace()
-      expect(result).toEqual(stubs.main.defaultValue())
+      expect(result).toEqual(main())
     })
 
     it('Should only return the first default value when given an option with `limit` is set to `1`!', () => {
       const result = stackTrace(undefined, { limit: 1 })
-      expect(result).toEqual(stubs.main.defaultValue().slice(0, 1))
+      expect(result).toEqual(main().slice(0, 1))
     })
 
-    describe('Test properties of the first default value from the `stackTrace` when given an empty argument!', () => {
+    describe('Test properties of the first default value from the `stackTrace` when given an empty argument:', () => {
       it('Should return a `string` (a type name) when invoke the `getTypeName` property!', () => {
         const result = stackTrace()
         expect(result[0].getTypeName()).toBe('Object')
@@ -26,7 +27,7 @@ describe('Test the root `index`!', () => {
 
       it('Should return a `number` (a line number) when invoke the `getLineNumber` property!', () => {
         const result = stackTrace()
-        expect(result[0].getLineNumber()).toBe(25)
+        expect(result[0].getLineNumber()).toBe(28)
       })
 
       it('Should return a `number` (a column number) when invoke the `getColumnNumber` property!', () => {
