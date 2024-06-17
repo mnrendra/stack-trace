@@ -1,11 +1,12 @@
-import { stubs } from '@tests'
+import target from '@tests/stubs/target'
+
 import { createTarget } from '.'
 
-describe('Test utils!', () => {
-  describe('Test `createTarget` util!', () => {
+describe('Test utils:', () => {
+  describe('Test `createTarget` util:', () => {
     it('Should return the default value of the `target` object!', () => {
       const result = createTarget()
-      expect(result).toEqual(stubs.target.defaultValue())
+      expect(result).toEqual(target())
     })
 
     it('Should has a `stack` property in the default value of the `target` object!', () => {

@@ -35,7 +35,7 @@ const config: Config = {
 
   // An array of regexp pattern strings used to skip coverage collection
   coveragePathIgnorePatterns: [
-    // '/node_modules/'
+    '/node_modules/',
     '/tests/'
   ],
 
@@ -111,11 +111,8 @@ const config: Config = {
     '@tests': ['<rootDir>/tests'],
     '@tests/*': ['<rootDir>/tests/*'],
     // @types
-    '@types': ['<rootDir>/types'],
-    '@types/*': ['<rootDir>/types/*'],
-    // @utils
-    '@utils': ['<rootDir>/utils'],
-    '@utils/*': ['<rootDir>/utils/*']
+    '@types': ['<rootDir>/src/types'],
+    '@types/*': ['<rootDir>/src/types/*']
   }),
 
   // An array of regexp pattern strings, matched against all module paths before

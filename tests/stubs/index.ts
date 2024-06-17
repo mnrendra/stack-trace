@@ -1,5 +1,5 @@
-import * as main from './main'
-import * as target from './target'
+import main from './main'
+import target from './target'
 
 export {
   main,

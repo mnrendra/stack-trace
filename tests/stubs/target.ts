@@ -1,5 +1,7 @@
 import type { Target } from '@types'
 
-export const defaultValue = (): Target => ({
+const target = (): Target => ({
   stack: []
 })
+
+export default target
