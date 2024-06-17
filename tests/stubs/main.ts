@@ -1,6 +1,6 @@
 import type { CallSite } from '@types'
 
-export const defaultValue = (): CallSite[] => ([
+const main = (): CallSite[] => ([
   expect.any(Object),
   expect.any(Object),
   expect.any(Object),
@@ -12,3 +12,5 @@ export const defaultValue = (): CallSite[] => ([
   expect.any(Object),
   expect.any(Object)
 ])
+
+export default main

@@ -1,18 +1,19 @@
-import { stubs } from '../tests'
+import mainStub from '@tests/stubs/main'
+
 import main from './main'
 
-describe('Test the `main` feature!', () => {
+describe('Test the `main` feature:', () => {
   it('Should return the default value (an array of `NodeJs.CallSite` objects!) when given an empty argument!', () => {
     const result = main()
-    expect(result).toEqual(stubs.main.defaultValue())
+    expect(result).toEqual(mainStub())
   })
 
   it('Should only return the first default value when given an option with `limit` is set to `1`!', () => {
     const result = main(undefined, { limit: 1 })
-    expect(result).toEqual(stubs.main.defaultValue().slice(0, 1))
+    expect(result).toEqual(mainStub().slice(0, 1))
   })
 
-  describe('Test properties of the first default value from the `main` feature when given an empty argument!', () => {
+  describe('Test properties of the first default value from the `main` feature when given an empty argument:', () => {
     it('Should return a `string` (a type name) when invoke the `getTypeName` property!', () => {
       const result = main()
       expect(result[0].getTypeName()).toBe('Object')
