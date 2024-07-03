@@ -40,26 +40,52 @@ console.log(trace.getFileName()); // Output: /foo/project-name/node_modules/modu
 
 Note: When calling `getFileName` from an <b>ESM</b> module, it will return the file name as a <b>URL</b> instead of a file path.
 
-## Options
+3. Implement `options` and `validateSkippedStacks`:
 ```javascript
-import type { stackTrace } from '@mnrendra/stack-trace'
+import {
+  stackTrace,
+  // from `@mnrendra/validate-skipped-stacks`:
+  validateSkippedStacks
+} from '@mnrendra/stack-trace'
 
-stackTrace(
+const stacks = stackTrace(
   null, // Or any target function to be invoked.
   {
     limit: 10 // The `Error.stackTraceLimit` property specifies the number of stack frames collected by a stack trace.
   }
 )
+
+const SKIPPED_STACK = 'your-module-name' // Example, you want to skip your module stack and trace your consumer stacks.
+
+const paths = stacks.map((stack) =>
+  typeof stack.getFileName() === 'string' && stack.getFileName() !== ''
+    ? stack.getFileName()
+    : SKIPPED_STACK
+)
+
+const validSkippedStacks = validateSkippedStacks(
+  SKIPPED_STACK,
+  ['other-stack'] // Or you can also pass it as an optional skipped stack from your consumer.
+)
+
+// Find the initial path.
+const path = paths.find((path) => !(
+  validSkippedStacks.some((skippedStack) =>
+    typeof path === 'string' && path !== '' && path.includes(skippedStack)
+  )
+))
+
+console.log(path)
 ```
 
 ## Types
 ```typescript
-import {
+import type {
   CallSite, // NodeJS.CallSite
   StackTrace, // (targetFunction?: TargetFunction, options?: Options) => CallSite[]
   TargetFunction, // (...args: any[]) => any | Promise<TargetFunction>
   Options, // { limit?: number }
-  // from `@mnrendra/validate-skipped-stacks`
+  // from `@mnrendra/validate-skipped-stacks`:
   SkippedStacks,
   ValidSkippedStacks
 } from '@mnrendra/stack-trace'
