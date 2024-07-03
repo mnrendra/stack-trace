@@ -9,4 +9,5 @@ const createTarget = (): Target => ({
   stack: []
 })
 
+// Export `createTarget` as the default value.
 export default createTarget

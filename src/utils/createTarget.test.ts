@@ -1,11 +1,9 @@
-import target from '@tests/stubs/target'
-
 import createTarget from './createTarget'
 
 describe('Test `createTarget` util:', () => {
   it('Should return the default value of the `target` object!', () => {
     const result = createTarget()
-    expect(result).toEqual(target())
+    expect(result).toEqual({ stack: [] })
   })
 
   it('Should has a `stack` property in the default value of the `target` object!', () => {
