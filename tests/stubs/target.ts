@@ -1,7 +1,7 @@
-import type { Target } from '@types'
+import type { Target } from '@/types'
 
-const target = (): Target => ({
+const target: Target = {
   stack: []
-})
+}
 
 export default target
