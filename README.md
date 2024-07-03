@@ -40,13 +40,28 @@ console.log(trace.getFileName()); // Output: /foo/project-name/node_modules/modu
 
 Note: When calling `getFileName` from an <b>ESM</b> module, it will return the file name as a <b>URL</b> instead of a file path.
 
+## Options
+```javascript
+import type { stackTrace } from '@mnrendra/stack-trace'
+
+stackTrace(
+  null, // Or any target function to be invoked.
+  {
+    limit: 10 // The `Error.stackTraceLimit` property specifies the number of stack frames collected by a stack trace.
+  }
+)
+```
+
 ## Types
 ```typescript
-import type {
+import {
   CallSite, // NodeJS.CallSite
   StackTrace, // (targetFunction?: TargetFunction, options?: Options) => CallSite[]
   TargetFunction, // (...args: any[]) => any | Promise<TargetFunction>
-  Options // { limit?: number }
+  Options, // { limit?: number }
+  // from `@mnrendra/validate-skipped-stacks`
+  SkippedStacks,
+  ValidSkippedStacks
 } from '@mnrendra/stack-trace'
 ```
 

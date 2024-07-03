@@ -1,17 +1,28 @@
-import main from '@tests/stubs/main'
-
 import { stackTrace } from '.'
 
 describe('Test all features:', () => {
   describe('Test `stackTrace` feature:', () => {
     it('Should return the default value (an array of `NodeJs.CallSite` objects!) when given an empty argument!', () => {
       const result = stackTrace()
-      expect(result).toEqual(main())
+      expect(result).toEqual([
+        expect.any(Object),
+        expect.any(Object),
+        expect.any(Object),
+        expect.any(Object),
+        expect.any(Object),
+        expect.any(Object),
+        expect.any(Object),
+        expect.any(Object),
+        expect.any(Object),
+        expect.any(Object)
+      ])
     })
 
     it('Should only return the first default value when given an option with `limit` is set to `1`!', () => {
       const result = stackTrace(undefined, { limit: 1 })
-      expect(result).toEqual(main().slice(0, 1))
+      expect(result).toEqual([
+        expect.any(Object)
+      ])
     })
 
     describe('Test properties of the first default value from the `stackTrace` when given an empty argument:', () => {
@@ -27,7 +38,7 @@ describe('Test all features:', () => {
 
       it('Should return a `number` (a line number) when invoke the `getLineNumber` property!', () => {
         const result = stackTrace()
-        expect(result[0].getLineNumber()).toBe(28)
+        expect(result[0].getLineNumber()).toBe(37)
       })
 
       it('Should return a `number` (a column number) when invoke the `getColumnNumber` property!', () => {

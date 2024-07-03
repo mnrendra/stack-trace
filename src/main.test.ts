@@ -1,16 +1,27 @@
-import mainStub from '@tests/stubs/main'
-
 import main from './main'
 
-describe('Test the `main` feature:', () => {
+describe('Test `main` feature:', () => {
   it('Should return the default value (an array of `NodeJs.CallSite` objects!) when given an empty argument!', () => {
     const result = main()
-    expect(result).toEqual(mainStub())
+    expect(result).toEqual([
+      expect.any(Object),
+      expect.any(Object),
+      expect.any(Object),
+      expect.any(Object),
+      expect.any(Object),
+      expect.any(Object),
+      expect.any(Object),
+      expect.any(Object),
+      expect.any(Object),
+      expect.any(Object)
+    ])
   })
 
   it('Should only return the first default value when given an option with `limit` is set to `1`!', () => {
     const result = main(undefined, { limit: 1 })
-    expect(result).toEqual(mainStub().slice(0, 1))
+    expect(result).toEqual([
+      expect.any(Object)
+    ])
   })
 
   describe('Test properties of the first default value from the `main` feature when given an empty argument:', () => {
@@ -26,7 +37,7 @@ describe('Test the `main` feature:', () => {
 
     it('Should return a `number` (a line number) when invoke the `getLineNumber` property!', () => {
       const result = main()
-      expect(result[0].getLineNumber()).toBe(27)
+      expect(result[0].getLineNumber()).toBe(39)
     })
 
     it('Should return a `number` (a column number) when invoke the `getColumnNumber` property!', () => {
