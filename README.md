@@ -40,42 +40,18 @@ console.log(trace.getFileName()); // Output: /foo/project-name/node_modules/modu
 
 Note: When calling `getFileName` from an <b>ESM</b> module, it will return the file name as a <b>URL</b> instead of a file path.
 
-3. Implement `options` and `validateSkippedStacks`:
+## Options
 ```javascript
-import {
-  stackTrace,
-  // from `@mnrendra/validate-skipped-stacks`:
-  validateSkippedStacks
-} from '@mnrendra/stack-trace'
+import { stackTrace } from '@mnrendra/stack-trace'
 
-const stacks = stackTrace(
-  null, // Or any target function to be invoked.
+stackTrace(
+  // The first argument is the target function, or `null`, or `undefined`:
+  null,
+  // The second argument is the options object:
   {
-    limit: 10 // The `Error.stackTraceLimit` property specifies the number of stack frames collected by a stack trace.
+    limit: 10 // The `Error.stackTraceLimit` property specifies the number of stack frames to be collected by a stack trace.
   }
 )
-
-const SKIPPED_STACK = 'your-module-name' // Example, you want to skip your module stack and trace your consumer stacks.
-
-const paths = stacks.map((stack) =>
-  typeof stack.getFileName() === 'string' && stack.getFileName() !== ''
-    ? stack.getFileName()
-    : SKIPPED_STACK
-)
-
-const validSkippedStacks = validateSkippedStacks(
-  SKIPPED_STACK,
-  ['other-stack'] // Or you can also pass it as an optional skipped stack from your consumer.
-)
-
-// Find the initial path.
-const path = paths.find((path) => !(
-  validSkippedStacks.some((skippedStack) =>
-    typeof path === 'string' && path !== '' && path.includes(skippedStack)
-  )
-))
-
-console.log(path)
 ```
 
 ## Types
@@ -84,10 +60,7 @@ import type {
   CallSite, // NodeJS.CallSite
   StackTrace, // (targetFunction?: TargetFunction, options?: Options) => CallSite[]
   TargetFunction, // (...args: any[]) => any | Promise<TargetFunction>
-  Options, // { limit?: number }
-  // from `@mnrendra/validate-skipped-stacks`:
-  SkippedStacks,
-  ValidSkippedStacks
+  Options // { limit?: number }
 } from '@mnrendra/stack-trace'
 ```
 
