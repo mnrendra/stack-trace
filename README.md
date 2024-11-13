@@ -1,5 +1,5 @@
 # @mnrendra/stack-trace
-A utility that enables stack tracing of the `NodeJs.CallSite` object, allowing dynamic tracing of invocations.
+A utility to enable stack tracing of the `NodeJs.CallSite` object, allowing dynamic tracing of invocations.
 
 ## Install
 ```bash
@@ -58,8 +58,6 @@ stackTrace(
 ```typescript
 import type {
   CallSite, // NodeJS.CallSite
-  StackTrace, // (targetFunction?: TargetFunction, options?: Options) => CallSite[]
-  TargetFunction, // (...args: any[]) => any | Promise<TargetFunction>
   Options // { limit?: number }
 } from '@mnrendra/stack-trace'
 ```
