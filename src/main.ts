@@ -1,35 +1,35 @@
-import type { TargetFunction, Options, StackTrace } from './types'
+import type { CallSite, Options } from './types'
 
 import { createTarget } from './utils'
 
 /**
- * A utility that enables stack tracing of the `NodeJs.CallSite` object,
- * allowing dynamic tracing of invocations.
+ * A utility to enable stack tracing of the `NodeJs.CallSite` object, allowing
+ * dynamic tracing of invocations.
  *
- * @param {Function} [targetFunction] - An optional function that can serve as
+ * @param {Function|null} [targetFunction] - An optional function to serve as
  * the target.
- * @param {Object} [options] - An optional set of options to configure the
+ * @param {Options} [options] - An optional set of options to configure the
  * output.
  *
  * @returns {Array} An array containing objects of type `NodeJS.CallSite`.
  *
  * @see https://github.com/mnrendra/stack-trace#readme
  */
-const main: StackTrace = function (
-  targetFunction?: TargetFunction,
+const main = (
+  targetFunction?: Function | null,
   {
     limit = 10
   }: Options = {
     limit: 10
   }
-) {
+): CallSite[] => {
   // Initialize the `target` object.
   const target = createTarget()
 
   // Destructure necessary properties from the `Error` object.
   const { stackTraceLimit, prepareStackTrace } = Error
 
-  // Set `Error.stackTraceLimit` based on the `limit` option.
+  // Override `Error.stackTraceLimit` based on the `limit` option.
   Error.stackTraceLimit = limit
 
   // Override `Error.prepareStackTrace` to return only the `stack` object.

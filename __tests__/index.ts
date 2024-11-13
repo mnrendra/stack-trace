@@ -1,4 +1,4 @@
-import { stackTrace } from '.'
+import { stackTrace, validateSkippedStacks } from '..'
 
 describe('Test all features:', () => {
   describe('Test `stackTrace` feature:', () => {
@@ -18,8 +18,15 @@ describe('Test all features:', () => {
       ])
     })
 
-    it('Should only return the first default value when given an option with `limit` is set to `1`!', () => {
+    it('Should only return the first default value when given an option with `limit` is set to `1` and first argument is set to `undefined`!', () => {
       const result = stackTrace(undefined, { limit: 1 })
+      expect(result).toEqual([
+        expect.any(Object)
+      ])
+    })
+
+    it('Should only return the first default value when given an option with `limit` is set to `1` and first argument is set to `null`!', () => {
+      const result = stackTrace(null, { limit: 1 })
       expect(result).toEqual([
         expect.any(Object)
       ])
@@ -38,12 +45,12 @@ describe('Test all features:', () => {
 
       it('Should return a `number` (a line number) when invoke the `getLineNumber` property!', () => {
         const result = stackTrace()
-        expect(result[0].getLineNumber()).toBe(37)
+        expect(result[0].getLineNumber()).toBe(43)
       })
 
       it('Should return a `number` (a column number) when invoke the `getColumnNumber` property!', () => {
         const result = stackTrace()
-        expect(result[0].getColumnNumber()).toBe(50)
+        expect(result[0].getColumnNumber()).toBe(51)
       })
 
       it('Should return `null` when invoke the `getMethodName` property!', () => {
@@ -90,6 +97,29 @@ describe('Test all features:', () => {
         const result = stackTrace()
         expect(result[0].isToplevel()).toBe(false)
       })
+    })
+  })
+
+  describe('Test `validateSkippedStacks` feature:', () => {
+    it('Should return a valid skipped-stacks when given a skipped-stack!', () => {
+      const received = validateSkippedStacks('SKIPPED_STACK')
+      const expected = ['SKIPPED_STACK']
+
+      expect(received).toEqual(expected)
+    })
+
+    it('Should return a valid skipped-stacks when given a skipped-stack and a `skippedStacks` option with a string!', () => {
+      const received = validateSkippedStacks('SKIPPED_STACK', 'any')
+      const expected = ['SKIPPED_STACK', 'any']
+
+      expect(received).toEqual(expected)
+    })
+
+    it('Should return a valid skipped-stacks when given a skipped-stack and a `skippedStacks` option with a list of strings!', () => {
+      const received = validateSkippedStacks('SKIPPED_STACK', ['any'])
+      const expected = ['SKIPPED_STACK', 'any']
+
+      expect(received).toEqual(expected)
     })
   })
 })

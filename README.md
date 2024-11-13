@@ -1,5 +1,5 @@
 # @mnrendra/stack-trace
-A utility that enables stack tracing of the `NodeJs.CallSite` object, allowing dynamic tracing of invocations.
+A utility to enable stack tracing of the `NodeJs.CallSite` object, allowing dynamic tracing of invocations.
 
 ## Install
 ```bash
@@ -54,13 +54,26 @@ stackTrace(
 )
 ```
 
+## Utils
+```javascript
+import {
+  /**
+   * A utility to validate a name or a list of names of stack traces that need to be skipped.
+   *
+   * @see https://github.com/mnrendra/validate-skipped-stacks
+   */
+  validateSkippedStacks
+} from '@mnrendra/stack-trace'
+```
+
 ## Types
 ```typescript
 import type {
   CallSite, // NodeJS.CallSite
-  StackTrace, // (targetFunction?: TargetFunction, options?: Options) => CallSite[]
-  TargetFunction, // (...args: any[]) => any | Promise<TargetFunction>
-  Options // { limit?: number }
+  Options, // { limit?: number },
+  // @mnrendra/validate-skipped-stacks
+  SkippedStacks,
+  ValidSkippedStacks
 } from '@mnrendra/stack-trace'
 ```
 
