@@ -54,15 +54,10 @@ stackTrace(
 )
 ```
 
-## Utils
+## Utilities
 ```javascript
 import {
-  /**
-   * A utility to validate a name or a list of names of stack traces that need to be skipped.
-   *
-   * @see https://github.com/mnrendra/validate-skipped-stacks
-   */
-  validateSkippedStacks
+  validateSkippedStacks // To validate a name or a list of names of stack traces that need to be skipped. More info: @see https://github.com/mnrendra/validate-skipped-stacks
 } from '@mnrendra/stack-trace'
 ```
 
@@ -70,10 +65,9 @@ import {
 ```typescript
 import type {
   CallSite, // NodeJS.CallSite
-  Options, // { limit?: number },
-  // @mnrendra/validate-skipped-stacks
-  SkippedStacks,
-  ValidSkippedStacks
+  Options, // @mnrendra/stack-trace options
+  SkippedStacks, // @mnrendra/validate-skipped-stacks input
+  ValidSkippedStacks // @mnrendra/validate-skipped-stacks output
 } from '@mnrendra/stack-trace'
 ```
 
