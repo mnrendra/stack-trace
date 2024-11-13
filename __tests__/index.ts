@@ -1,4 +1,4 @@
-import { stackTrace } from '.'
+import { stackTrace } from '..'
 
 describe('Test all features:', () => {
   describe('Test `stackTrace` feature:', () => {
@@ -43,7 +43,7 @@ describe('Test all features:', () => {
 
       it('Should return a `number` (a column number) when invoke the `getColumnNumber` property!', () => {
         const result = stackTrace()
-        expect(result[0].getColumnNumber()).toBe(50)
+        expect(result[0].getColumnNumber()).toBe(51)
       })
 
       it('Should return `null` when invoke the `getMethodName` property!', () => {
