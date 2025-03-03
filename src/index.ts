@@ -8,6 +8,7 @@ export {
 
 export type {
   CallSite,
+  Func,
   Options
 } from './types'
 
