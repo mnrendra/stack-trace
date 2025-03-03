@@ -65,6 +65,7 @@ import {
 ```typescript
 import type {
   CallSite, // NodeJS.CallSite
+  Func, // (...args: any[]) => any
   Options, // @mnrendra/stack-trace options
   SkippedStacks, // @mnrendra/validate-skipped-stacks input
   ValidSkippedStacks // @mnrendra/validate-skipped-stacks output
