@@ -25,7 +25,7 @@
   },
   "homepage": "https://github.com/mnrendra/stack-trace#readme",
   "dependencies": {
-    "@mnrendra/validate-skipped-stacks": "^2.0.2"
+    "@mnrendra/validate-skipped-stacks": "^2.0.3"
   },
   "devDependencies": {
     "@semantic-release/exec": "^7.0.3",
