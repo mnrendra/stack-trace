@@ -1,5 +1,11 @@
 # @mnrendra/stack-trace
-A utility to enable stack tracing of the `NodeJs.CallSite` object, allowing dynamic tracing of invocations.
+
+![npm version](https://img.shields.io/npm/v/@mnrendra/stack-trace)
+![types](https://img.shields.io/npm/types/@mnrendra/stack-trace)
+![license](https://img.shields.io/npm/l/@mnrendra/stack-trace)
+
+A utility for stack tracing using the [NodeJS.CallSite](https://nodejs.org/api/errors.html#callsite-object) object, allowing dynamic inspection of function invocations.<br/>
+*Useful for debugging, logging, or building tools that need to understand call origins and file references at runtime.*
 
 ## Install
 ```bash
@@ -7,68 +13,97 @@ npm i @mnrendra/stack-trace
 ```
 
 ## Usage
+- `traceStacks(fn?, options?)`: Returns an array of `NodeJS.CallSite` objects representing the captured stack trace of the given function.
+- `traceFiles(fn?, options?)`: Returns an array of file names (as `string` in **CommonJS** or `URL` in **ESM**) extracted from the stack trace of the given function.
+
+
 Using `CommonJS`:
 ```javascript
-const { stackTrace } = require('@mnrendra/stack-trace')
-const [trace] = stackTrace()
-console.log(trace.getFileName() === __filename) // Output: true
+const { traceStacks, traceFiles } = require('@mnrendra/stack-trace')
+
+const [stack] = traceStacks()
+console.log(stack.getFileName() === __filename) // Output: true
+
+const [file] = traceFiles()
+console.log(file === __filename) // Output: true
 ```
 
-Using `ES Module`:
+Using `ES Modules`:
 ```javascript
-import { stackTrace } from '@mnrendra/stack-trace'
 import { fileURLToPath } from 'node:url'
-const [trace] = stackTrace()
-console.log(new URL(trace.getFileName()).pathname === fileURLToPath(import.meta.url)) // Output: true
+import { traceStacks, traceFiles } from '@mnrendra/stack-trace'
+
+const [stack] = traceStacks()
+console.log(new URL(stack.getFileName()).pathname === fileURLToPath(import.meta.url)) // Output: true
+
+const [file] = traceFiles()
+console.log(new URL(file).pathname === fileURLToPath(import.meta.url)) // Output: true
 ```
 
 ### Examples
 1. Call from your development project `/foo/project-name/src/index.mjs`:
 ```javascript
-import { stackTrace } from '@mnrendra/stack-trace'
-const [trace] = stackTrace()
-console.log(trace.getFileName()) // Output: file:///foo/project-name/src/index.mjs
+import { traceStacks, traceFiles } from '@mnrendra/stack-trace'
+
+const main = () => {
+  const [stack] = traceStacks(main)
+  console.log(stack.getFileName()) // Output: file:///foo/project-name/src/index.mjs
+
+  const [file] = traceFiles(main)
+  console.log(file) // Output: file:///foo/project-name/src/index.mjs
+}
+
+export default main
 ```
 
 2. Call from your production module `/foo/project-name/node_modules/module-name/dist/index.js`:
 ```javascript
 "use strict";
-const { stackTrace } = require('@mnrendra/stack-trace');
-const [trace] = stackTrace();
-console.log(trace.getFileName()); // Output: /foo/project-name/node_modules/module-name/dist/index.js
+
+const { traceStacks, traceFiles } = require('@mnrendra/stack-trace');
+
+const main = () => {
+  const [trace] = traceStacks(main);
+  console.log(trace.getFileName()); // Output: /foo/project-name/node_modules/module-name/dist/index.js
+
+  const [file] = traceFiles(main);
+  console.log(file); // Output: /foo/project-name/node_modules/module-name/dist/index.js
+};
+
+module.exports = main;
 ```
 
-Note: When calling `getFileName` from an <b>ESM</b> module, it will return the file name as a <b>URL</b> instead of a file path.
+**Note**: When calling `getFileName` from an **ESM** module, it will return the file name as a **URL** instead of a file path.
+
 
 ## Options
 ```javascript
-import { stackTrace } from '@mnrendra/stack-trace'
+import { traceStacks, traceFiles } from '@mnrendra/stack-trace'
 
-stackTrace(
-  // The first argument is the target function, or `null`, or `undefined`:
+traceStacks(
+  // The target function to trace (optional)
   null,
-  // The second argument is the options object:
   {
-    limit: 10 // The `Error.stackTraceLimit` property specifies the number of stack frames to be collected by a stack trace.
+    // The maximum number of stack frames to capture (default: 10)
+    limit: 10
   }
 )
-```
 
-## Utilities
-```javascript
-import {
-  validateSkippedStacks // To validate a name or a list of names of stack traces that need to be skipped. More info: @see https://github.com/mnrendra/validate-skipped-stacks
-} from '@mnrendra/stack-trace'
+traceFiles(
+  // The target function to trace (optional)
+  null,
+  {
+    // The maximum number of stack frames to capture (default: 10)
+    limit: 10
+  }
+)
 ```
 
 ## Types
 ```typescript
 import type {
   CallSite, // NodeJS.CallSite
-  Func, // (...args: any[]) => any
-  Options, // @mnrendra/stack-trace options
-  SkippedStacks, // @mnrendra/validate-skipped-stacks input
-  ValidSkippedStacks // @mnrendra/validate-skipped-stacks output
+  Options, // Shared options for `traceStacks` and `traceFiles`
 } from '@mnrendra/stack-trace'
 ```
 
