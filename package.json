@@ -1,6 +1,6 @@
 {
   "name": "@mnrendra/stack-trace",
-  "version": "1.4.4",
+  "version": "2.0.0",
   "description": "A utility for stack tracing using the NodeJS.CallSite object, allowing dynamic inspection of function invocations.",
   "private": false,
   "main": "dist/index.js",
