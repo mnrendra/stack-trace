@@ -1,1 +1,3 @@
-export type CallSite = NodeJS.CallSite
+type CallSite = NodeJS.CallSite
+
+export default CallSite

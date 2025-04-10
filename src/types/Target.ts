@@ -1,5 +1,7 @@
-import type { CallSite } from './CallSite'
+import type CallSite from './CallSite'
 
-export interface Target {
+interface Target {
   stack: CallSite[]
 }
+
+export default Target

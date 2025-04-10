@@ -1,4 +1,4 @@
-export interface Options {
+interface Options {
   /**
    * The `Error.stackTraceLimit` property specifies the number of stack frames
    * collected by a stack trace.
@@ -16,3 +16,5 @@ export interface Options {
    */
   limit?: number
 }
+
+export default Options
