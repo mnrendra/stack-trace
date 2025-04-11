@@ -3,8 +3,8 @@ import type { CallSite, Options } from '../types'
 import { createTarget } from '../utils'
 
 /**
- * A utility to enable stack tracing of the `NodeJs.CallSite` object, allowing
- * dynamic tracing of invocations.
+ * A utility for stack tracing based on the `NodeJS.CallSite` object, enabling
+ * dynamic inspection of function calls.
  *
  * @param {((...args: any) => any)|null} [targetFn] - An optional function to
  * serve as the target.

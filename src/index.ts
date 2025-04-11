@@ -5,5 +5,6 @@ export type {
 
 export {
   traceFiles,
+  traceFnNames,
   traceStacks
 } from './libs'
