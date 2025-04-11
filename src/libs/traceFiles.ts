@@ -21,7 +21,7 @@ const traceFiles = (
     limit = 10
   }: Options = {}
 ): Array<string | null | undefined> => {
-  const stacks = traceStacks(targetFn, { limit })
+  const stacks = traceStacks(targetFn ?? traceFiles, { limit })
 
   const files = stacks.map((stack) => stack.getFileName())
 
