@@ -4,7 +4,7 @@
 ![types](https://img.shields.io/npm/types/@mnrendra/stack-trace)
 ![license](https://img.shields.io/npm/l/@mnrendra/stack-trace)
 
-A utility for stack tracing using the [NodeJS.CallSite](https://nodejs.org/api/errors.html#callsite-object) object, allowing dynamic inspection of function invocations.<br/>
+A utility for stack tracing based on the [NodeJS.CallSite](https://nodejs.org/api/errors.html#callsite-object) object, allowing dynamic inspection of function invocations.<br/>
 *Useful for debugging, logging, or building tools that need to understand call origins and file references at runtime.*
 
 ## Install
@@ -45,15 +45,11 @@ console.log(new URL(file).pathname === fileURLToPath(import.meta.url)) // Output
 ```javascript
 import { traceStacks, traceFiles } from '@mnrendra/stack-trace'
 
-const main = () => {
-  const [stack] = traceStacks(main)
-  console.log(stack.getFileName()) // Output: file:///foo/project-name/src/index.mjs
+const [stack] = traceStacks(main)
+console.log(stack.getFileName()) // Output: file:///foo/project-name/src/index.mjs
 
-  const [file] = traceFiles(main)
-  console.log(file) // Output: file:///foo/project-name/src/index.mjs
-}
-
-export default main
+const [file] = traceFiles(main)
+console.log(file) // Output: file:///foo/project-name/src/index.mjs
 ```
 
 2. Call from your production module `/foo/project-name/node_modules/module-name/dist/index.js`:
@@ -62,19 +58,14 @@ export default main
 
 const { traceStacks, traceFiles } = require('@mnrendra/stack-trace');
 
-const main = () => {
-  const [trace] = traceStacks(main);
-  console.log(trace.getFileName()); // Output: /foo/project-name/node_modules/module-name/dist/index.js
+const [trace] = traceStacks();
+console.log(trace.getFileName()); // Output: /foo/project-name/node_modules/module-name/dist/index.js
 
-  const [file] = traceFiles(main);
-  console.log(file); // Output: /foo/project-name/node_modules/module-name/dist/index.js
-};
-
-module.exports = main;
+const [file] = traceFiles();
+console.log(file); // Output: /foo/project-name/node_modules/module-name/dist/index.js
 ```
 
 **Note**: When calling `getFileName` from an **ESM** module, it will return the file name as a **URL** instead of a file path.
-
 
 ## Options
 ```javascript

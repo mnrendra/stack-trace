@@ -106,8 +106,8 @@ describe('Test all features:', () => {
       expect(result).toEqual([
         expect.any(String),
         expect.any(String),
-        expect.any(String),
         null,
+        expect.any(String),
         expect.any(String),
         expect.any(String),
         expect.any(String),
