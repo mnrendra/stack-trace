@@ -1,7 +1,5 @@
-import type CallSite from './CallSite'
-
 interface Target {
-  stack: CallSite[]
+  stack: NodeJS.CallSite[]
 }
 
 export default Target
