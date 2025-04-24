@@ -3,23 +3,23 @@ import type { Options } from './types'
 import { createTarget } from './helpers'
 
 /**
- * Traces the caller's call sites, starting after a specific callee.
+ * Captures [v8 stack trace](https://v8.dev/docs/stack-trace-api) from a
+ * specific caller.
  *
- * Captures the current stack trace as an array of `NodeJS.CallSite`.
- * If a callee is provided, the trace start from the caller of the callee.
- *
- * @param {((...args: any) => any) | null} [callee] -
- * Optional callee function or method to start tracing after.
+ * @param {((...args:any)=>any)|null} [callee] -
+ * Optional callee function to specify the caller.
  * If `undefined` or `null`, tracing starts from the current caller.
  *
  * @param {Options} [options] -
- * Configuration options for tracing behavior.
+ * Optional options to affect the captured frames.
+ *
  * By default, the `limit` option is set to `Infinity` to capture all frames.
  * To capture only a specific number of frames, set the `limit` option to a
  * positive number.
  *
  * @returns {NodeJS.CallSite[]}
- * An array of `NodeJS.CallSite` representing the captured stack trace.
+ * Array of `CallSite` objects representing the captured stack trace
+ * frames.
  *
  * @see https://github.com/mnrendra/stack-trace#readme
  */
