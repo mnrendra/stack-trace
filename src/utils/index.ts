@@ -1,5 +1,5 @@
-import createTarget from './createTarget'
+import extractFilePath from './extractFilePath'
 
 export {
-  createTarget
+  extractFilePath
 }
