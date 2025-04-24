@@ -5,6 +5,7 @@ export type {
 } from './types'
 
 export {
+  getCallerDir,
   getCallerFile,
   getCallerSite
 } from './libs'

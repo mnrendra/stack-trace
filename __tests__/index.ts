@@ -5,7 +5,8 @@ import {
   stackTrace,
   getCallerSite,
   extractFilePath,
-  getCallerFile
+  getCallerFile,
+  getCallerDir
 } from '..'
 
 describe('Test all APIs:', () => {
@@ -24,7 +25,7 @@ describe('Test all APIs:', () => {
       received.forEach(testMethods)
     })
 
-    it('Should return the caller stack trace when the callee is a specific function!', () => {
+    it('Should return the caller\'s stack trace when the callee is a specific function!', () => {
       const callee = (): NodeJS.CallSite[] => stackTrace(callee)
       const caller = (): NodeJS.CallSite[] => callee()
       const received = caller()
@@ -32,7 +33,7 @@ describe('Test all APIs:', () => {
       received.forEach(testMethods)
     })
 
-    it('Should only return the first stack trace frame when the `limit` option is set to `1`!', () => {
+    it('Should only return the first call site when the `limit` option is set to `1`!', () => {
       const caller = (): NodeJS.CallSite[] => stackTrace(caller, { limit: 1 })
       const received = caller()
       expect(received).toHaveLength(1)
@@ -40,7 +41,7 @@ describe('Test all APIs:', () => {
       received.forEach(testMethods)
     })
 
-    describe('Test all methods of the first stack frame returned from the `stackTrace` API:', () => {
+    describe('Test all methods of the first call site returned from the `stackTrace` API:', () => {
       const caller = (): NodeJS.CallSite[] => stackTrace()
       const [callSite] = caller()
 
@@ -72,7 +73,7 @@ describe('Test all APIs:', () => {
         expect(received).toBeNull()
       })
 
-      it('Should return the caller name when the `getFunctionName` method is invoked!', () => {
+      it('Should return the caller\'s name when the `getFunctionName` method is invoked!', () => {
         const received = callSite.getFunctionName()
         const expected = 'caller'
         expect(received).toBe(expected)
@@ -134,14 +135,14 @@ describe('Test all APIs:', () => {
       testMethods(received)
     })
 
-    it('Should return the first call site from the caller stack trace when the callee is a specific function!', () => {
+    it('Should return the first call site from the caller\'s stack trace when the callee is a specific function!', () => {
       const caller = (): NodeJS.CallSite => getCallerSite(caller)
       const received = caller()
       expect(received).toMatchSnapshot()
       testMethods(received)
     })
 
-    describe('Test all methods of the caller site object:', () => {
+    describe('Test all methods of the caller\'s site object:', () => {
       const caller = (): NodeJS.CallSite => getCallerSite()
       const callerSite = caller()
 
@@ -173,7 +174,7 @@ describe('Test all APIs:', () => {
         expect(received).toBeNull()
       })
 
-      it('Should return the caller name when the `getFunctionName` method is invoked!', () => {
+      it('Should return the caller\'s name when the `getFunctionName` method is invoked!', () => {
         const received = callerSite.getFunctionName()
         const expected = 'caller'
         expect(received).toBe(expected)
@@ -225,7 +226,7 @@ describe('Test all APIs:', () => {
     const callerSite = caller()
     const getFileName = callerSite.getFileName.bind(callerSite)
 
-    describe('By mocking `getFileName` of the call site to returns `undefined`:', () => {
+    describe('By mocking the `getFileName` method on the call site returned from `getCallerSite` to return `undefined`:', () => {
       beforeEach(() => {
         Object.defineProperty(callerSite, 'getFileName', {
           value: () => undefined,
@@ -244,14 +245,14 @@ describe('Test all APIs:', () => {
         })
       })
 
-      it('Should throw an error when the returned value of `getFileName` is not a string!', () => {
+      it('Should throw an error when the returned value of `getFileName` method is not a string!', () => {
         const received = (): string => extractFilePath(callerSite)
-        const expected = new Error('File name is not a string: `undefined`')
+        const expected = new Error('Caller\'s file name is not a string: `undefined`')
         expect(received).toThrow(expected)
       })
     })
 
-    describe('By mocking `getFileName` of the call site to returns `null`:', () => {
+    describe('By mocking the `getFileName` method on the call site returned from `getCallerSite` to return `null`:', () => {
       beforeEach(() => {
         Object.defineProperty(callerSite, 'getFileName', {
           value: () => null,
@@ -270,14 +271,14 @@ describe('Test all APIs:', () => {
         })
       })
 
-      it('Should throw an error when the returned value of `getFileName` is not a string!', () => {
+      it('Should throw an error when the returned value of `getFileName` method is not a string!', () => {
         const received = (): string => extractFilePath(callerSite)
-        const expected = new Error('File name is not a string: `null`')
+        const expected = new Error('Caller\'s file name is not a string: `null`')
         expect(received).toThrow(expected)
       })
     })
 
-    describe('By mocking `getFileName` of the call site to returns a non-absolute path:', () => {
+    describe('By mocking the `getFileName` method on the call site returned from `getCallerSite` to return a non-absolute path:', () => {
       beforeEach(() => {
         Object.defineProperty(callerSite, 'getFileName', {
           value: () => './index.js',
@@ -296,9 +297,9 @@ describe('Test all APIs:', () => {
         })
       })
 
-      it('Should throw an error when the returned value of `getFileName` is a non-absolute path!', () => {
+      it('Should throw an error when the returned value of `getFileName` method is a non-absolute path!', () => {
         const received = (): string => extractFilePath(callerSite)
-        const expected = new Error('File path is not absolute: "./index.js"')
+        const expected = new Error('Caller\'s file path is not absolute: "./index.js"')
         expect(received).toThrow(expected)
       })
     })
@@ -313,22 +314,48 @@ describe('Test all APIs:', () => {
   })
 
   describe('Test `getCallerFile` API:', () => {
-    it('Should return the file path from the first call site in the current stack trace when the callee is `undefined`!', () => {
+    it('Should return an absolute path of the current file name when the callee is `undefined`!', () => {
       const caller = (): string => getCallerFile()
       const received = caller()
-      expect(received).toBe(__filename)
+      const expected = __filename
+      expect(received).toBe(expected)
     })
 
-    it('Should return the file path from first call site in the current stack trace when the callee is `null`!', () => {
+    it('Should return an absolute path of the current file name when the callee is `null`!', () => {
       const caller = (): string => getCallerFile(null)
       const received = caller()
-      expect(received).toBe(__filename)
+      const expected = __filename
+      expect(received).toBe(expected)
     })
 
-    it('Should return the file path from first call site in the caller stack trace when the callee is a specific function!', () => {
+    it('Should return an absolute path of the caller\'s file name when the callee is a specific function!', () => {
       const caller = (): string => getCallerFile(caller)
       const received = caller()
-      expect(received).toBe(__filename)
+      const expected = __filename
+      expect(received).toBe(expected)
+    })
+  })
+
+  describe('Test `getCallerDir` API:', () => {
+    it('Should return an absolute path of the current directory when the callee is `undefined`!', () => {
+      const caller = (): string => getCallerDir()
+      const received = caller()
+      const expected = __dirname
+      expect(received).toBe(expected)
+    })
+
+    it('Should return an absolute path of the current directory when the callee is `null`!', () => {
+      const caller = (): string => getCallerDir(null)
+      const received = caller()
+      const expected = __dirname
+      expect(received).toBe(expected)
+    })
+
+    it('Should return an absolute path of the caller\'s directory when the callee is a specific function!', () => {
+      const caller = (): string => getCallerDir(caller)
+      const received = caller()
+      const expected = __dirname
+      expect(received).toBe(expected)
     })
   })
 })

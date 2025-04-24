@@ -4,7 +4,7 @@ const normalizePath = (
   fileName?: string | null
 ): string => {
   if (typeof fileName !== 'string') {
-    throw new Error(`File name is not a string: \`${fileName}\``)
+    throw new Error(`Caller's file name is not a string: \`${fileName}\``)
   }
 
   try {

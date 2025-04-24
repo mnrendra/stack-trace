@@ -2,12 +2,12 @@
 
 ![version](https://img.shields.io/npm/v/@mnrendra/stack-trace)
 ![types](https://img.shields.io/npm/types/@mnrendra/stack-trace)
-![license](https://img.shields.io/npm/l/@mnrendra/stack-trace)
 ![size](https://img.shields.io/npm/unpacked-size/@mnrendra/stack-trace)
 ![downloads](https://img.shields.io/npm/dm/@mnrendra/stack-trace)
+![license](https://img.shields.io/npm/l/@mnrendra/stack-trace)
 
-A utility for tracing the caller's call sites, starting after a specific callee.<br/>
-*Useful for debugging, logging, or building tools that need to get the call origin details at runtime.*
+A lightweight [stack trace](https://v8.dev/docs/stack-trace-api) utility to get call origins at runtime from a specific caller.<br/>
+*Useful for debugging, logging, or building tools that require call site information.*
 
 ## Install
 ```bash
@@ -17,8 +17,7 @@ npm i @mnrendra/stack-trace
 ## API Reference
 
 ### `stackTrace`
-Traces the caller's call sites, starting after a specific callee.<br/>
-*Captures the current stack trace as an array of `NodeJS.CallSite`. If a callee is provided, the trace start from the caller of the callee.*
+Captures [v8 stack trace](https://v8.dev/docs/stack-trace-api) from a specific caller.
 
 #### Type
 ```typescript
@@ -26,16 +25,16 @@ Traces the caller's call sites, starting after a specific callee.<br/>
 ```
 
 #### Parameters
-| Name      | Type                              | Description                                                                                                                                                                                                      |
-|-----------|-----------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `callee`  | `((...args: any) => any) \| null` | Optional callee function or method to start tracing after. If `undefined` or `null`, tracing starts from the current caller.                                                                                     |
-| `options` | `Options`                         | Configuration options for tracing behavior. By default, the `limit` option is set to `Infinity` to capture all frames. To capture only a specific number of frames, set the `limit` option to a positive number. |
+| Name      | Type                              | Description                                                                                                                                                                                                          |
+|-----------|-----------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `callee`  | `((...args: any) => any) \| null` | Optional callee function to specify the caller. If `undefined` or `null`, tracing starts from the current caller.                                                                                                    |
+| `options` | `Options`                         | Optional options to affect the captured frames. By default, the `limit` option is set to `Infinity` to capture all frames. To capture only a specific number of frames, set the `limit` option to a positive number. |
 
 #### Return
 ```typescript
 NodeJS.CallSite[]
 ```
-An array of `NodeJS.CallSite` representing the captured stack trace.
+Array of `CallSite` objects representing the captured stack trace frames.
 
 #### Options
 | Name    | Type     | Default    | Description                                                                                                                                                                                                                                                                                                                                |
@@ -43,8 +42,7 @@ An array of `NodeJS.CallSite` representing the captured stack trace.
 | `limit` | `number` | `Infinity` | Specifies the number of stack frames to be collected by a stack trace. The default value is `Infinity`, but may be set to any valid JavaScript number. Changes will affect any stack trace captured after the value has been changed. If set to a non-number value, or set to a negative number, stack traces will not capture any frames. |
 
 ### `getCallerSite`
-Gets the caller's call site, starting after a specific callee.<br/>
-*Returns the first call site from the current stack trace as a `NodeJS.CallSite`. If a callee is provided, the trace start from the caller of the callee.*
+Gets the caller's site captured from [`stackTrace`](#stacktrace).
 
 #### Type
 ```typescript
@@ -52,19 +50,19 @@ Gets the caller's call site, starting after a specific callee.<br/>
 ```
 
 #### Parameters
-| Name      | Type                              | Description                                                                                                                  |
-|-----------|-----------------------------------|------------------------------------------------------------------------------------------------------------------------------|
-| `callee`  | `((...args: any) => any) \| null` | Optional callee function or method to start tracing after. If `undefined` or `null`, tracing starts from the current caller. |
+| Name      | Type                              | Description                                                           |
+|-----------|-----------------------------------|-----------------------------------------------------------------------|
+| `callee`  | `((...args: any) => any) \| null` | Optional callee function to be passed to [`stackTrace`](#stacktrace). |
 
 #### Return
 ```typescript
 NodeJS.CallSite
 ```
-A `NodeJS.CallSite` representing the first call site from the captured stack trace.
+First `CallSite` object captured from [`stackTrace`](#stacktrace).
 
 ### `extractFilePath`
-Extracts the file name from a call site and converts it to a file path if the value is a file URL.<br/>
-*This utility ensures that the returned path is always absolute.*
+Extracts the file name from a `CallSite` object and converts it to a file path if the value is a file URL.<br/>
+*This utility ensures that the returned value is an absolute path.*
 
 #### Type
 ```typescript
@@ -72,19 +70,21 @@ Extracts the file name from a call site and converts it to a file path if the va
 ```
 
 #### Parameters
-| Name        | Type              | Description                                               |
-|-------------|-------------------|-----------------------------------------------------------|
-| `callSite`  | `NodeJS.CallSite` | A `NodeJS.CallSite` object captured from the stack trace. |
+| Name        | Type              | Description                                                  |
+|-------------|-------------------|--------------------------------------------------------------|
+| `callSite`  | `NodeJS.CallSite` | `CallSite` object captured from [`stackTrace`](#stacktrace). |
 
 #### Return
 ```typescript
 string
 ```
-The absolute path of the file name associated with the call site.
+Absolute path of the file name extracted from a `CallSite` object.
+
+#### Throws
+If the extracted file name is not a string or not absolute.
 
 ### `getCallerFile`
-Gets the caller's file path, starting after a specific callee.<br/>
-*Returns the extracted file path from the first call site in the current stack trace. If a callee is provided, the trace start from the caller of the callee.*
+Gets the caller's file from the result of [`getCallerSite`](#getcallersite) and ensures it returns an absolute path extracted from [`extractFilePath`](#extractfilepath).
 
 #### Type
 ```typescript
@@ -92,32 +92,60 @@ Gets the caller's file path, starting after a specific callee.<br/>
 ```
 
 #### Parameters
-| Name      | Type                              | Description                                                                                                                  |
-|-----------|-----------------------------------|------------------------------------------------------------------------------------------------------------------------------|
-| `callee`  | `((...args: any) => any) \| null` | Optional callee function or method to start tracing after. If `undefined` or `null`, tracing starts from the current caller. |
+| Name      | Type                              | Description                                                                 |
+|-----------|-----------------------------------|-----------------------------------------------------------------------------|
+| `callee`  | `((...args: any) => any) \| null` | Optional callee function to be passed to [`getCallerSite`](#getcallersite). |
 
 #### Return
 ```typescript
 string
 ```
-A `string` representing the file path from the first call site in the captured stack trace.
+Absolute path of the caller's file extracted from the result of [`getCallerSite`](#getcallersite).
+
+#### Throws
+If the extracted file name is not a string or not absolute.
+
+### `getCallerDir`
+Gets the caller's directory extracted from the result of [`getCallerFile`](#getcallerfile).
+
+#### Type
+```typescript
+(callee?: ((...args: any) => any) | null) => string
+```
+
+#### Parameters
+| Name      | Type                              | Description                                                                 |
+|-----------|-----------------------------------|-----------------------------------------------------------------------------|
+| `callee`  | `((...args: any) => any) \| null` | Optional callee function to be passed to [`getCallerFile`](#getcallerfile). |
+
+#### Return
+```typescript
+string
+```
+Absolute path of the caller's directory extracted from the result of [`getCallerFile`](#getcallerfile).
+
+#### Throws
+If the caller's file name is not a string or not absolute.
 
 ## Usage
 
 ### CommonJS
 `/foo/callee.cjs`
 ```javascript
+const { dirname } = require('node:path')
+
 const {
   stackTrace,
   getCallerSite,
   extractFilePath,
-  getCallerFile
+  getCallerFile,
+  getCallerDir
 } = require('@mnrendra/stack-trace')
 
 const callee = () => {
-  // stackTrace:
+  // `stackTrace`:
   const [callSite1] = stackTrace()
-  const [callSite2] = stackTrace(callee, { limit: 1 }) // set the `callee` function as the callee.
+  const [callSite2] = stackTrace(callee, { limit: 1 }) // Pass the `callee` function as the callee.
 
   console.log(callSite1.getFileName()) // Output: /foo/callee.cjs
   console.log(callSite2.getFileName()) // Output: /foo/caller.cjs
@@ -125,9 +153,9 @@ const callee = () => {
   console.log(callSite1.getFunctionName()) // Output: callee
   console.log(callSite2.getFunctionName()) // Output: caller
 
-  // getCallerSite:
+  // `getCallerSite`:
   const callerSite1 = getCallerSite()
-  const callerSite2 = getCallerSite(callee) // set the `callee` function as the callee.
+  const callerSite2 = getCallerSite(callee) // Pass the `callee` function as the callee.
 
   console.log(callerSite1.getFileName() === callSite1.getFileName()) // Output: true
   console.log(callerSite2.getFileName() === callSite2.getFileName()) // Output: true
@@ -141,22 +169,32 @@ const callee = () => {
   console.log(callerSite1.getFunctionName()) // Output: callee
   console.log(callerSite2.getFunctionName()) // Output: caller
 
-  // extractFilePath:
+  // `extractFilePath`:
   const filePath1 = extractFilePath(callerSite1)
   const filePath2 = extractFilePath(callerSite2)
 
   console.log(filePath1) // Output: /foo/callee.cjs
   console.log(filePath2) // Output: /foo/caller.cjs
 
-  // getCallerFile:
+  // `getCallerFile`:
   const callerFile1 = getCallerFile()
-  const callerFile2 = getCallerFile(callee) // set the `callee` function as the callee.
+  const callerFile2 = getCallerFile(callee) // Pass the `callee` function as the callee.
 
   console.log(callerFile1 === filePath1) // Output: true
   console.log(callerFile2 === filePath2) // Output: true
 
   console.log(callerFile1) // Output: /foo/callee.cjs
   console.log(callerFile2) // Output: /foo/caller.cjs
+
+  // `getCallerDir`:
+  const callerDir1 = getCallerDir()
+  const callerDir2 = getCallerDir(callee) // Pass the `callee` function as the callee.
+
+  console.log(callerDir1 === dirname(filePath1)) // Output: true
+  console.log(callerDir2 === dirname(filePath2)) // Output: true
+
+  console.log(callerDir1) // Output: /foo
+  console.log(callerDir2) // Output: /foo
 }
 
 module.exports = callee
@@ -172,17 +210,20 @@ caller()
 ### ES Modules
 `/foo/callee.mjs`
 ```javascript
+import { dirname } from 'node:path'
+
 import {
   stackTrace,
   getCallerSite,
   extractFilePath,
-  getCallerFile
+  getCallerFile,
+  getCallerDir
 } from '@mnrendra/stack-trace'
 
 const callee = () => {
-  // stackTrace:
+  // `stackTrace`:
   const [callSite1] = stackTrace()
-  const [callSite2] = stackTrace(callee, { limit: 1 }) // set the `callee` function as the callee.
+  const [callSite2] = stackTrace(callee, { limit: 1 }) // Pass the `callee` function as the callee.
 
   console.log(callSite1.getFileName()) // Output: file:///foo/callee.mjs
   console.log(callSite2.getFileName()) // Output: file:///foo/caller.mjs
@@ -190,9 +231,9 @@ const callee = () => {
   console.log(callSite1.getFunctionName()) // Output: callee
   console.log(callSite2.getFunctionName()) // Output: caller
 
-  // getCallerSite:
+  // `getCallerSite`:
   const callerSite1 = getCallerSite()
-  const callerSite2 = getCallerSite(callee) // set the `callee` function as the callee.
+  const callerSite2 = getCallerSite(callee) // Pass the `callee` function as the callee.
 
   console.log(callerSite1.getFileName() === callSite1.getFileName()) // Output: true
   console.log(callerSite2.getFileName() === callSite2.getFileName()) // Output: true
@@ -206,22 +247,32 @@ const callee = () => {
   console.log(callerSite1.getFunctionName()) // Output: callee
   console.log(callerSite2.getFunctionName()) // Output: caller
 
-  // extractFilePath:
+  // `extractFilePath`:
   const filePath1 = extractFilePath(callerSite1)
   const filePath2 = extractFilePath(callerSite2)
 
   console.log(filePath1) // Output: /foo/callee.mjs
   console.log(filePath2) // Output: /foo/caller.mjs
 
-  // getCallerFile:
+  // `getCallerFile`:
   const callerFile1 = getCallerFile()
-  const callerFile2 = getCallerFile(callee) // set the `callee` function as the callee.
+  const callerFile2 = getCallerFile(callee) // Pass the `callee` function as the callee.
 
   console.log(callerFile1 === filePath1) // Output: true
   console.log(callerFile2 === filePath2) // Output: true
 
   console.log(callerFile1) // Output: /foo/callee.mjs
   console.log(callerFile2) // Output: /foo/caller.mjs
+
+  // `getCallerDir`:
+  const callerDir1 = getCallerDir()
+  const callerDir2 = getCallerDir(callee) // Pass the `callee` function as the callee.
+
+  console.log(callerDir1 === dirname(filePath1)) // Output: true
+  console.log(callerDir2 === dirname(filePath2)) // Output: true
+
+  console.log(callerDir1) // Output: /foo
+  console.log(callerDir2) // Output: /foo
 }
 
 export default callee
@@ -234,11 +285,13 @@ const caller = () => callee()
 caller()
 ```
 
-**Note**:
-- In ES Modules, `getFileName` returns a **file URL** (e.g., `file:///foo`), instead of a **file path** (`/foo`).<br/>
-*To convert it, use either `url.fileURLToPath` or the `extractFilePath` utility.*
-- By default `stackTrace` will capture all caller frames.<br/>
-*To capture only a specific number of frames, set the `limit` option to a positive number.*
+> **Note**:
+>
+> - In ES Modules, `getFileName` returns a **file URL** (e.g., `file:///foo`), instead of a **file path** (`/foo`).<br/>
+> *To convert it, use either `url.fileURLToPath` or the `extractFilePath` utility.*
+>
+> - By default `stackTrace` will capture all caller's frames.<br/>
+> *To capture only a specific number of frames, set the `limit` option to a positive number.*
 
 ### Examples
 
@@ -246,23 +299,25 @@ caller()
 
 `/foo/project-name/src/index.mjs`:
 ```javascript
+import { dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 import {
   stackTrace,
   getCallerSite,
   extractFilePath,
-  getCallerFile
+  getCallerFile,
+  getCallerDir
 } from '@mnrendra/stack-trace'
 
-// stackTrace:
+// `stackTrace`:
 const caller1 = () => stackTrace()
 const [callSite] = caller1()
 const fileName = callSite.getFileName()
 console.log(fileName) // Output: file:///foo/project-name/src/index.mjs
 console.log(fileURLToPath(fileName)) // Output: /foo/project-name/src/index.mjs
 
-// getCallerSite:
+// `getCallerSite`:
 const caller2 = () => getCallerSite()
 const callerSite = caller2()
 const callerFileName = callerSite.getFileName()
@@ -270,16 +325,22 @@ console.log(callerFileName === fileName) // Output: true
 console.log(callerFileName) // Output: file:///foo/project-name/src/index.mjs
 console.log(fileURLToPath(callerFileName)) // Output: /foo/project-name/src/index.mjs
 
-// extractFilePath:
+// `extractFilePath`:
 const filePath = extractFilePath(callerSite)
 console.log(filePath === fileURLToPath(callerFileName)) // Output: true
 console.log(filePath) // Output: /foo/project-name/src/index.mjs
 
-// getCallerFile:
+// `getCallerFile`:
 const caller3 = () => getCallerFile()
 const callerFile = caller3()
 console.log(callerFile === filePath) // Output: true
 console.log(callerFile) // Output: /foo/project-name/src/index.mjs
+
+// `getCallerDir`:
+const caller4 = () => getCallerDir()
+const callerDir = caller4()
+console.log(callerDir === dirname(filePath)) // Output: true
+console.log(callerDir) // Output: /foo/project-name/src
 ```
 
 2. **Call from a production package**
@@ -288,36 +349,45 @@ console.log(callerFile) // Output: /foo/project-name/src/index.mjs
 ```javascript
 "use strict";
 
+const { dirname } = require("node:path");
+
 const {
   stackTrace,
   getCallerSite,
   extractFilePath,
-  getCallerFile
+  getCallerFile,
+  getCallerDir
 } = require("@mnrendra/stack-trace");
 
-// stackTrace:
+// `stackTrace`:
 const caller1 = () => stackTrace();
 const [callSite] = caller1();
 const fileName = callSite.getFileName();
 console.log(fileName); // Output: /foo/consumer/node_modules/module-name/dist/index.cjs
 
-// getCallerSite:
+// `getCallerSite`:
 const caller2 = () => getCallerSite();
 const callerSite = caller2();
 const callerFileName = callerSite.getFileName();
 console.log(callerFileName === fileName); // Output: true
 console.log(callerFileName); // Output: /foo/consumer/node_modules/module-name/dist/index.cjs
 
-// extractFilePath:
+// `extractFilePath`:
 const filePath = extractFilePath(callerSite);
 console.log(filePath === callerFileName); // Output: true
 console.log(filePath); // Output: /foo/consumer/node_modules/module-name/dist/index.cjs
 
-// getCallerFile:
+// `getCallerFile`:
 const caller3 = () => getCallerFile()
 const callerFile = caller3()
 console.log(callerFile === filePath) // Output: true
 console.log(callerFile) // Output: /foo/consumer/node_modules/module-name/dist/index.cjs
+
+// `getCallerDir`:
+const caller4 = () => getCallerDir();
+const callerDir = caller4();
+console.log(callerDir === dirname(filePath)); // Output: true
+console.log(callerDir); // Output: /foo/consumer/node_modules/module-name/dist
 ```
 
 ## Types

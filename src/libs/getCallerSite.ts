@@ -1,19 +1,16 @@
 import main from '../main'
 
 /**
- * Gets the caller's call site, starting after a specific callee.
+ * Gets the caller's site captured
+ * from [`stackTrace`](https://github.com/mnrendra/stack-trace?tab=readme-ov-file#stacktrace).
  *
- * Returns the first call site from the current stack trace as a
- * `NodeJS.CallSite`.
- * If a callee is provided, the trace start from the caller of the callee.
- *
- * @param {((...args: any) => any) | null} [callee] -
- * Optional callee function or method to start tracing after.
- * If `undefined` or `null`, tracing starts from the current caller.
+ * @param {((...args:any)=>any)|null} [callee] -
+ * Optional callee function to be passed
+ * to [`stackTrace`](https://github.com/mnrendra/stack-trace?tab=readme-ov-file#stacktrace).
  *
  * @returns {NodeJS.CallSite}
- * A `NodeJS.CallSite` representing the first call site from the captured stack
- * trace.
+ * First `CallSite` object captured
+ * from [`stackTrace`](https://github.com/mnrendra/stack-trace?tab=readme-ov-file#stacktrace).
  *
  * @see https://github.com/mnrendra/stack-trace#readme
  */
