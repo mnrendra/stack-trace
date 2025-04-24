@@ -1,6 +1,6 @@
 import type { Options } from './types'
 
-import { createTarget } from './utils'
+import { createTarget } from './helpers'
 
 /**
  * Traces the caller's call sites, starting after a specific callee.

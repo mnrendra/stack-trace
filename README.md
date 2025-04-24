@@ -16,7 +16,7 @@ npm i @mnrendra/stack-trace
 
 ## API
 
-### • `stackTrace`
+### `stackTrace`
 Traces the caller's call sites, starting after a specific callee.<br/>
 *Captures the current stack trace as an array of `NodeJS.CallSite`. If a callee is provided, the trace will start from the caller of the callee.*
 
@@ -38,11 +38,11 @@ NodeJS.CallSite[]
 An array of `NodeJS.CallSite` representing the captured stack trace.
 
 #### Options
-| Name    | Type     | Default    | Description                                                                                                                                                                                                                                                                                                                               |
-|---------|----------|------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `limit` | `number` | `Infinity` | Specifies the number of stack frames to be collected by a stack trace. The default value is `Infinity` but may be set to any valid JavaScript number. Changes will affect any stack trace captured after the value has been changed. If set to a non-number value, or set to a negative number, stack traces will not capture any frames. |
+| Name    | Type     | Default    | Description                                                                                                                                                                                                                                                                                                                                |
+|---------|----------|------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `limit` | `number` | `Infinity` | Specifies the number of stack frames to be collected by a stack trace. The default value is `Infinity`, but may be set to any valid JavaScript number. Changes will affect any stack trace captured after the value has been changed. If set to a non-number value, or set to a negative number, stack traces will not capture any frames. |
 
-### • `getCallerSite`
+### `getCallerSite`
 Gets the caller's call site, starting after a specific callee.<br/>
 *Returns the first call site from the current stack trace as a `NodeJS.CallSite`. If a callee is provided, the trace will start from the caller of the callee.*
 
@@ -62,12 +62,36 @@ NodeJS.CallSite
 ```
 A `NodeJS.CallSite` representing the first call site from the captured stack trace.
 
+### `extractFilePath`
+Extracts the file name from a call site and converts it to a file path if the value is a file URL.<br/>
+*This utility ensures that the returned path is always absolute.*
+
+#### Type
+```typescript
+(callSite: NodeJS.CallSite) => string
+```
+
+#### Parameters
+| Name        | Type              | Description                                               |
+|-------------|-------------------|-----------------------------------------------------------|
+| `callSite`  | `NodeJS.CallSite` | A `NodeJS.CallSite` object captured from the stack trace. |
+
+#### Return
+```typescript
+string
+```
+The absolute path of the file name associated with the call site.
+
 ## Usage
 
 ### CommonJS
 `/foo/callee.cjs`
 ```javascript
-const { stackTrace, getCallerSite } = require('@mnrendra/stack-trace')
+const {
+  stackTrace,
+  getCallerSite,
+  extractFilePath
+} = require('@mnrendra/stack-trace')
 
 const callee = () => {
   // stackTrace:
@@ -84,11 +108,24 @@ const callee = () => {
   const callerSite1 = getCallerSite()
   const callerSite2 = getCallerSite(callee) // set the `callee` function as the callee.
 
+  console.log(callerSite1.getFileName() === callSite1.getFileName()) // Output: true
+  console.log(callerSite2.getFileName() === callSite2.getFileName()) // Output: true
+
   console.log(callerSite1.getFileName()) // Output: /foo/callee.cjs
   console.log(callerSite2.getFileName()) // Output: /foo/caller.cjs
 
+  console.log(callerSite1.getFunctionName() === callSite1.getFunctionName()) // Output: true
+  console.log(callerSite2.getFunctionName() === callSite2.getFunctionName()) // Output: true
+
   console.log(callerSite1.getFunctionName()) // Output: callee
   console.log(callerSite2.getFunctionName()) // Output: caller
+
+  // extractFilePath:
+  const filePath1 = extractFilePath(callerSite1)
+  const filePath2 = extractFilePath(callerSite2)
+
+  console.log(filePath1) // Output: /foo/callee.cjs
+  console.log(filePath2) // Output: /foo/caller.cjs
 }
 
 module.exports = callee
@@ -104,7 +141,11 @@ caller()
 ### ES Modules
 `/foo/callee.mjs`
 ```javascript
-import { stackTrace, getCallerSite } from '@mnrendra/stack-trace'
+import {
+  stackTrace,
+  getCallerSite,
+  extractFilePath
+} from '@mnrendra/stack-trace'
 
 const callee = () => {
   // stackTrace:
@@ -121,11 +162,24 @@ const callee = () => {
   const callerSite1 = getCallerSite()
   const callerSite2 = getCallerSite(callee) // set the `callee` function as the callee.
 
+  console.log(callerSite1.getFileName() === callSite1.getFileName()) // Output: true
+  console.log(callerSite2.getFileName() === callSite2.getFileName()) // Output: true
+
   console.log(callerSite1.getFileName()) // Output: file:///foo/callee.mjs
   console.log(callerSite2.getFileName()) // Output: file:///foo/caller.mjs
 
+  console.log(callerSite1.getFunctionName() === callSite1.getFunctionName()) // Output: true
+  console.log(callerSite2.getFunctionName() === callSite2.getFunctionName()) // Output: true
+
   console.log(callerSite1.getFunctionName()) // Output: callee
   console.log(callerSite2.getFunctionName()) // Output: caller
+
+  // extractFilePath:
+  const filePath1 = extractFilePath(callerSite1)
+  const filePath2 = extractFilePath(callerSite2)
+
+  console.log(filePath1) // Output: /foo/callee.mjs
+  console.log(filePath2) // Output: /foo/caller.mjs
 }
 
 export default callee
@@ -140,18 +194,23 @@ caller()
 
 **Note**:
 - In ES Modules, `getFileName` returns a **file URL** (e.g., `file:///foo`), instead of a **file path** (`/foo`).<br/>
-*Use `url.fileURLToPath` to convert it if needed.*
+*To convert it, use either `url.fileURLToPath` or the `extractFilePath` utility.*
 - By default `stackTrace` will capture all caller frames.<br/>
 *To capture only a specific number of frames, set the `limit` option to a positive number.*
 
 ### Examples
 
-1. **Call from your development project**
+1. **Call from a development project**
 
 `/foo/project-name/src/index.mjs`:
 ```javascript
 import { fileURLToPath } from 'node:url'
-import { stackTrace, getCallerSite } from '@mnrendra/stack-trace'
+
+import {
+  stackTrace,
+  getCallerSite,
+  extractFilePath
+} from '@mnrendra/stack-trace'
 
 // stackTrace:
 const caller1 = () => stackTrace()
@@ -166,19 +225,32 @@ console.log(fileURLToPath(fileName)) // Output: /foo/project-name/src/index.mjs
 const caller2 = () => getCallerSite()
 const callerSite = caller2()
 
-const fileName = callerSite.getFileName()
+const callerFileName = callerSite.getFileName()
 
-console.log(fileName) // Output: file:///foo/project-name/src/index.mjs
-console.log(fileURLToPath(fileName)) // Output: /foo/project-name/src/index.mjs
+console.log(callerFileName === fileName) // Output: true
+
+console.log(callerFileName) // Output: file:///foo/project-name/src/index.mjs
+console.log(fileURLToPath(callerFileName)) // Output: /foo/project-name/src/index.mjs
+
+// extractFilePath:
+const filePath = extractFilePath(callerSite)
+
+console.log(filePath === fileURLToPath(callerFileName)) // Output: true
+
+console.log(filePath) // Output: /foo/project-name/src/index.mjs
 ```
 
-2. **Call from your production package**
+2. **Call from a production package**
 
-`/foo/consumer/node_modules/module-name/dist/index.js`:
+`/foo/consumer/node_modules/module-name/dist/index.cjs`:
 ```javascript
 "use strict";
 
-const { stackTrace, getCallerSite } = require("@mnrendra/stack-trace");
+const {
+  stackTrace,
+  getCallerSite,
+  extractFilePath
+} = require("@mnrendra/stack-trace");
 
 // stackTrace:
 const caller1 = () => stackTrace();
@@ -186,15 +258,24 @@ const [callSite] = caller1();
 
 const fileName = callSite.getFileName();
 
-console.log(fileName); // Output: /foo/consumer/node_modules/module-name/dist/index.js
+console.log(fileName); // Output: /foo/consumer/node_modules/module-name/dist/index.cjs
 
 // getCallerSite:
 const caller2 = () => getCallerSite();
 const callerSite = caller2();
 
-const fileName = callerSite.getFileName();
+const callerFileName = callerSite.getFileName();
 
-console.log(fileName); // Output: /foo/consumer/node_modules/module-name/dist/index.js
+console.log(callerFileName === fileName); // Output: true
+
+console.log(callerFileName); // Output: /foo/consumer/node_modules/module-name/dist/index.cjs
+
+// extractFilePath:
+const filePath = extractFilePath(callerSite);
+
+console.log(filePath === callerFileName); // Output: true
+
+console.log(filePath); // Output: /foo/consumer/node_modules/module-name/dist/index.cjs
 ```
 
 ## Types

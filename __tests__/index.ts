@@ -1,6 +1,11 @@
+import { isAbsolute } from 'node:path'
 import { testMethods } from '@tests/utils'
 
-import { stackTrace, getCallerSite } from '..'
+import {
+  stackTrace,
+  getCallerSite,
+  extractFilePath
+} from '..'
 
 describe('Test all APIs:', () => {
   describe('Test `stackTrace` API:', () => {
@@ -113,7 +118,7 @@ describe('Test all APIs:', () => {
     })
   })
 
-  describe('Test `getCallerSite`', () => {
+  describe('Test `getCallerSite` API:', () => {
     it('Should return the first call site from the current stack trace when the callee is `undefined`!', () => {
       const caller = (): NodeJS.CallSite => getCallerSite()
       const received = caller()
@@ -210,6 +215,98 @@ describe('Test all APIs:', () => {
         const received = callerSite.isToplevel()
         const expected = true
         expect(received).toBe(expected)
+      })
+    })
+  })
+
+  describe('Test `extractFilePath` API:', () => {
+    const caller = (): NodeJS.CallSite => getCallerSite()
+    const callerSite = caller()
+    const getFileName = callerSite.getFileName.bind(callerSite)
+
+    describe('By mocking `getFileName` of the call site to returns `undefined`:', () => {
+      beforeEach(() => {
+        Object.defineProperty(callerSite, 'getFileName', {
+          value: () => undefined,
+          configurable: true,
+          enumerable: true,
+          writable: false
+        })
+      })
+
+      afterEach(() => {
+        Object.defineProperty(callerSite, 'getFileName', {
+          value: getFileName,
+          configurable: true,
+          enumerable: true,
+          writable: false
+        })
+      })
+
+      it('Should throw an error when the returned value of `getFileName` is not a string!', () => {
+        const received = (): string => extractFilePath(callerSite)
+        const expected = new Error('File name is not a string: `undefined`')
+        expect(received).toThrow(expected)
+      })
+    })
+
+    describe('By mocking `getFileName` of the call site to returns `null`:', () => {
+      beforeEach(() => {
+        Object.defineProperty(callerSite, 'getFileName', {
+          value: () => null,
+          configurable: true,
+          enumerable: true,
+          writable: false
+        })
+      })
+
+      afterEach(() => {
+        Object.defineProperty(callerSite, 'getFileName', {
+          value: getFileName,
+          configurable: true,
+          enumerable: true,
+          writable: false
+        })
+      })
+
+      it('Should throw an error when the returned value of `getFileName` is not a string!', () => {
+        const received = (): string => extractFilePath(callerSite)
+        const expected = new Error('File name is not a string: `null`')
+        expect(received).toThrow(expected)
+      })
+    })
+
+    describe('By mocking `getFileName` of the call site to returns a non-absolute path:', () => {
+      beforeEach(() => {
+        Object.defineProperty(callerSite, 'getFileName', {
+          value: () => './index.js',
+          configurable: true,
+          enumerable: true,
+          writable: false
+        })
+      })
+
+      afterEach(() => {
+        Object.defineProperty(callerSite, 'getFileName', {
+          value: getFileName,
+          configurable: true,
+          enumerable: true,
+          writable: false
+        })
+      })
+
+      it('Should throw an error when the returned value of `getFileName` is a non-absolute path!', () => {
+        const received = (): string => extractFilePath(callerSite)
+        const expected = new Error('File path is not absolute: "./index.js"')
+        expect(received).toThrow(expected)
+      })
+    })
+
+    describe('Without mocking anything:', () => {
+      it('Should return an absolute path of the current file name!', () => {
+        const received = extractFilePath(callerSite)
+        expect(received).toBe(__filename)
+        expect(isAbsolute(received)).toBe(true)
       })
     })
   })

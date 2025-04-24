@@ -9,5 +9,9 @@ export {
 } from './libs'
 
 export {
+  extractFilePath
+} from './utils'
+
+export {
   main as stackTrace
 }
