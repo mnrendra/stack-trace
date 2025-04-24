@@ -6,7 +6,7 @@ import { createTarget } from './helpers'
  * Traces the caller's call sites, starting after a specific callee.
  *
  * Captures the current stack trace as an array of `NodeJS.CallSite`.
- * If a callee is provided, the trace will start from the caller of the callee.
+ * If a callee is provided, the trace start from the caller of the callee.
  *
  * @param {((...args: any) => any) | null} [callee] -
  * Optional callee function or method to start tracing after.
