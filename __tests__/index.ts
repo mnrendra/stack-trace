@@ -4,7 +4,8 @@ import { testMethods } from '@tests/utils'
 import {
   stackTrace,
   getCallerSite,
-  extractFilePath
+  extractFilePath,
+  getCallerFile
 } from '..'
 
 describe('Test all APIs:', () => {
@@ -308,6 +309,26 @@ describe('Test all APIs:', () => {
         expect(received).toBe(__filename)
         expect(isAbsolute(received)).toBe(true)
       })
+    })
+  })
+
+  describe('Test `getCallerFile` API:', () => {
+    it('Should return the file path from the first call site in the current stack trace when the callee is `undefined`!', () => {
+      const caller = (): string => getCallerFile()
+      const received = caller()
+      expect(received).toBe(__filename)
+    })
+
+    it('Should return the file path from first call site in the current stack trace when the callee is `null`!', () => {
+      const caller = (): string => getCallerFile(null)
+      const received = caller()
+      expect(received).toBe(__filename)
+    })
+
+    it('Should return the file path from first call site in the caller stack trace when the callee is a specific function!', () => {
+      const caller = (): string => getCallerFile(caller)
+      const received = caller()
+      expect(received).toBe(__filename)
     })
   })
 })
