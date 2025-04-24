@@ -5,5 +5,9 @@ export type {
 } from './types'
 
 export {
+  getCallerSite
+} from './libs'
+
+export {
   main as stackTrace
 }
