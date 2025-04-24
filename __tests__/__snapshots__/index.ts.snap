@@ -1,6 +1,18 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Test all APIs: Test \`stackTrace\` API: Should capture the current stack trace when the callee is \`null\`! 1`] = `
+exports[`Test all APIs: Test \`getCallerSite\` Should return the first call site from the caller stack trace when the callee is a specific function! 1`] = `CallSite {}`;
+
+exports[`Test all APIs: Test \`getCallerSite\` Should return the first call site from the current stack trace when the callee is \`null\`! 1`] = `CallSite {}`;
+
+exports[`Test all APIs: Test \`getCallerSite\` Should return the first call site from the current stack trace when the callee is \`undefined\`! 1`] = `CallSite {}`;
+
+exports[`Test all APIs: Test \`stackTrace\` API: Should only return the first stack trace frame when the \`limit\` option is set to \`1\`! 1`] = `
+[
+  CallSite {},
+]
+`;
+
+exports[`Test all APIs: Test \`stackTrace\` API: Should return the caller stack trace when the callee is a specific function! 1`] = `
 [
   CallSite {},
   CallSite {},
@@ -21,7 +33,7 @@ exports[`Test all APIs: Test \`stackTrace\` API: Should capture the current stac
 ]
 `;
 
-exports[`Test all APIs: Test \`stackTrace\` API: Should capture the current stack trace when the callee is \`undefined\`! 1`] = `
+exports[`Test all APIs: Test \`stackTrace\` API: Should return the current stack trace when the callee is \`null\`! 1`] = `
 [
   CallSite {},
   CallSite {},
@@ -42,7 +54,7 @@ exports[`Test all APIs: Test \`stackTrace\` API: Should capture the current stac
 ]
 `;
 
-exports[`Test all APIs: Test \`stackTrace\` API: Should capture the stack trace of the caller when the callee is a specific function! 1`] = `
+exports[`Test all APIs: Test \`stackTrace\` API: Should return the current stack trace when the callee is \`undefined\`! 1`] = `
 [
   CallSite {},
   CallSite {},
@@ -59,12 +71,6 @@ exports[`Test all APIs: Test \`stackTrace\` API: Should capture the stack trace 
   CallSite {},
   CallSite {},
   CallSite {},
-  CallSite {},
-]
-`;
-
-exports[`Test all APIs: Test \`stackTrace\` API: Should only capture the first stack trace frame when the \`limit\` option is set to \`1\`! 1`] = `
-[
   CallSite {},
 ]
 `;
