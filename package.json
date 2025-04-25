@@ -1,7 +1,7 @@
 {
   "name": "@mnrendra/stack-trace",
   "version": "3.0.0",
-  "description": "A lightweight stack trace utility to get call origins at runtime from a specific caller.",
+  "description": "A lightweight stack trace utility to retrieve CallSite objects from a specific caller.",
   "private": false,
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -25,10 +25,8 @@
   },
   "homepage": "https://github.com/mnrendra/stack-trace#readme",
   "devDependencies": {
-    "@semantic-release/exec": "^7.0.3",
-    "@semantic-release/git": "^10.0.1",
     "@types/jest": "^29.5.14",
-    "@types/node": "^22.15.0",
+    "@types/node": "^22.15.2",
     "@typescript-eslint/eslint-plugin": "^6.21.0",
     "clean-package": "^2.2.0",
     "cz-conventional-changelog": "^3.3.0",

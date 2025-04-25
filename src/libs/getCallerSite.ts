@@ -1,18 +1,17 @@
 import main from '../main'
 
 /**
- * Gets the caller's site captured
- * from [`stackTrace`](https://github.com/mnrendra/stack-trace?tab=readme-ov-file#stacktrace).
+ * Gets the caller's `CallSite` object captured from
+ * {@link https://github.com/mnrendra/stack-trace#stacktrace `stackTrace`}.
  *
- * @param {((...args:any)=>any)|null} [callee] -
- * Optional callee function to be passed
- * to [`stackTrace`](https://github.com/mnrendra/stack-trace?tab=readme-ov-file#stacktrace).
+ * @param {((...args:any)=>any)|null} [callee] - Optional callee function to
+ * specify the caller. If `undefined` or `null`, tracing starts from the current
+ * caller.
  *
- * @returns {NodeJS.CallSite}
- * First `CallSite` object captured
- * from [`stackTrace`](https://github.com/mnrendra/stack-trace?tab=readme-ov-file#stacktrace).
+ * @returns {NodeJS.CallSite} First `CallSite` object captured in the stack
+ * trace.
  *
- * @see https://github.com/mnrendra/stack-trace#readme
+ * @see {@link https://github.com/mnrendra/stack-trace#getcallersite documentation}
  */
 const getCallerSite = (
   callee?: ((...args: any) => any) | null
