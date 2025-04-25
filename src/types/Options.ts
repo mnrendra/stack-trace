@@ -1,8 +1,14 @@
+/**
+ * {@link https://github.com/mnrendra/stack-trace#stacktrace `stackTrace`}'s
+ * {@link https://github.com/mnrendra/stack-trace#options options} interface.
+ *
+ * @see {@link https://github.com/mnrendra/stack-trace#options-1 documentation}
+ */
 interface Options {
   /**
    * Specifies the number of stack frames to be collected by a stack trace.
    *
-   * The default value is `Infinity` but may be set to any valid JavaScript
+   * The default value is `Infinity`, but may be set to any valid JavaScript
    * number. Changes will affect any stack trace captured after the value has
    * been changed.
    *

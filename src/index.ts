@@ -5,5 +5,15 @@ export type {
 } from './types'
 
 export {
+  getCallerDir,
+  getCallerFile,
+  getCallerSite
+} from './libs'
+
+export {
+  extractFilePath
+} from './utils'
+
+export {
   main as stackTrace
 }
