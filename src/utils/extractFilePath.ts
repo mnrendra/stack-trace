@@ -8,19 +8,16 @@ import { normalizePath } from '../helpers'
  *
  * This utility ensures that the returned value is an absolute path.
  *
- * @param {NodeJS.CallSite} callSite -
- * `CallSite` object captured
- * from [`stackTrace`](https://github.com/mnrendra/stack-trace?tab=readme-ov-file#stacktrace).
+ * @param {NodeJS.CallSite} callSite - `CallSite` object captured from
+ * {@link https://github.com/mnrendra/stack-trace#stacktrace `stackTrace`}.
  *
- * @returns {string}
- * Absolute path of the file name extracted from a `CallSite`
+ * @returns {string} Absolute path of the file name extracted from a `CallSite`
  * object.
  *
- * @throws
- * If the extracted file name is not a string or not
+ * @throws If the extracted file name is not a string or not
  * absolute.
  *
- * @see https://github.com/mnrendra/stack-trace#readme
+ * @see {@link https://github.com/mnrendra/stack-trace#extractfilepath documentation}
  */
 const extractFilePath = (
   callSite: NodeJS.CallSite

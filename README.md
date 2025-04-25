@@ -6,8 +6,8 @@
 ![downloads](https://img.shields.io/npm/dm/@mnrendra/stack-trace)
 ![license](https://img.shields.io/npm/l/@mnrendra/stack-trace)
 
-A lightweight [stack trace](https://v8.dev/docs/stack-trace-api) utility to get call origins at runtime from a specific caller.<br/>
-*Useful for debugging, logging, or building tools that require call site information.*
+A lightweight [stack trace](https://v8.dev/docs/stack-trace-api) utility to retrieve `CallSite` objects from a specific caller.<br/>
+*Useful for debugging, logging, or building tools that need to trace call origins at runtime.*
 
 ## Install
 ```bash
@@ -42,7 +42,7 @@ Array of `CallSite` objects representing the captured stack trace frames.
 | `limit` | `number` | `Infinity` | Specifies the number of stack frames to be collected by a stack trace. The default value is `Infinity`, but may be set to any valid JavaScript number. Changes will affect any stack trace captured after the value has been changed. If set to a non-number value, or set to a negative number, stack traces will not capture any frames. |
 
 ### `getCallerSite`
-Gets the caller's site captured from [`stackTrace`](#stacktrace).
+Gets the caller's `CallSite` object captured from [`stackTrace`](#stacktrace).
 
 #### Type
 ```typescript
@@ -50,15 +50,15 @@ Gets the caller's site captured from [`stackTrace`](#stacktrace).
 ```
 
 #### Parameters
-| Name      | Type                              | Description                                                           |
-|-----------|-----------------------------------|-----------------------------------------------------------------------|
-| `callee`  | `((...args: any) => any) \| null` | Optional callee function to be passed to [`stackTrace`](#stacktrace). |
+| Name      | Type                              | Description                                                                                                       |
+|-----------|-----------------------------------|-------------------------------------------------------------------------------------------------------------------|
+| `callee`  | `((...args: any) => any) \| null` | Optional callee function to specify the caller. If `undefined` or `null`, tracing starts from the current caller. |
 
 #### Return
 ```typescript
 NodeJS.CallSite
 ```
-First `CallSite` object captured from [`stackTrace`](#stacktrace).
+First `CallSite` object captured in the stack trace.
 
 ### `extractFilePath`
 Extracts the file name from a `CallSite` object and converts it to a file path if the value is a file URL.<br/>
@@ -84,7 +84,7 @@ Absolute path of the file name extracted from a `CallSite` object.
 If the extracted file name is not a string or not absolute.
 
 ### `getCallerFile`
-Gets the caller's file from the result of [`getCallerSite`](#getcallersite) and ensures it returns an absolute path extracted from [`extractFilePath`](#extractfilepath).
+Gets the caller's file extracted from the result of [`getCallerSite`](#getcallersite) and ensures it returns an absolute path using [`extractFilePath`](#extractfilepath).
 
 #### Type
 ```typescript
@@ -92,15 +92,15 @@ Gets the caller's file from the result of [`getCallerSite`](#getcallersite) and 
 ```
 
 #### Parameters
-| Name      | Type                              | Description                                                                 |
-|-----------|-----------------------------------|-----------------------------------------------------------------------------|
-| `callee`  | `((...args: any) => any) \| null` | Optional callee function to be passed to [`getCallerSite`](#getcallersite). |
+| Name      | Type                              | Description                                                                                                       |
+|-----------|-----------------------------------|-------------------------------------------------------------------------------------------------------------------|
+| `callee`  | `((...args: any) => any) \| null` | Optional callee function to specify the caller. If `undefined` or `null`, tracing starts from the current caller. |
 
 #### Return
 ```typescript
 string
 ```
-Absolute path of the caller's file extracted from the result of [`getCallerSite`](#getcallersite).
+Absolute path of the caller's file.
 
 #### Throws
 If the extracted file name is not a string or not absolute.
@@ -114,18 +114,18 @@ Gets the caller's directory extracted from the result of [`getCallerFile`](#getc
 ```
 
 #### Parameters
-| Name      | Type                              | Description                                                                 |
-|-----------|-----------------------------------|-----------------------------------------------------------------------------|
-| `callee`  | `((...args: any) => any) \| null` | Optional callee function to be passed to [`getCallerFile`](#getcallerfile). |
+| Name      | Type                              | Description                                                                                                       |
+|-----------|-----------------------------------|-------------------------------------------------------------------------------------------------------------------|
+| `callee`  | `((...args: any) => any) \| null` | Optional callee function to specify the caller. If `undefined` or `null`, tracing starts from the current caller. |
 
 #### Return
 ```typescript
 string
 ```
-Absolute path of the caller's directory extracted from the result of [`getCallerFile`](#getcallerfile).
+Absolute path of the caller's directory.
 
 #### Throws
-If the caller's file name is not a string or not absolute.
+If the extracted file name is not a string or not absolute.
 
 ## Usage
 
@@ -288,7 +288,7 @@ caller()
 > **Note**:
 >
 > - In ES Modules, `getFileName` returns a **file URL** (e.g., `file:///foo`), instead of a **file path** (`/foo`).<br/>
-> *To convert it, use either `url.fileURLToPath` or the `extractFilePath` utility.*
+> *To convert it to a file path, use either `url.fileURLToPath` or the `extractFilePath` utility.*
 >
 > - By default `stackTrace` will capture all caller's frames.<br/>
 > *To capture only a specific number of frames, set the `limit` option to a positive number.*
@@ -391,10 +391,23 @@ console.log(callerDir); // Output: /foo/consumer/node_modules/module-name/dist
 ```
 
 ## Types
+
+### `Options`
+[`stackTrace`](#stacktrace)'s [options](#options) interface.
+
 ```typescript
-import type {
-  Options
+import {
+  type Options,
+  stackTrace
 } from '@mnrendra/stack-trace'
+
+const options: Options = {
+  limit: 1
+}
+
+const caller = (): NodeJS.CallSite[] => stackTrace(caller, options)
+const callSites = caller()
+console.log(callSites.length) // Output: 1
 ```
 
 ## License

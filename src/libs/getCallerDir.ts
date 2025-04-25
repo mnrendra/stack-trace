@@ -4,21 +4,19 @@ import getCallerFile from './getCallerFile'
 
 /**
  * Gets the caller's directory extracted from the result of
- * [`getCallerFile`](https://github.com/mnrendra/stack-trace?tab=readme-ov-file#getcallerfile).
+ * {@link https://github.com/mnrendra/stack-trace#getcallerfile `getCallerFile`}.
  *
- * @param {((...args:any)=>any)|null} [callee] -
- * Optional callee function to be passed
- * to [`getCallerFile`](https://github.com/mnrendra/stack-trace?tab=readme-ov-file#getcallerfile).
+ * @param {((...args:any)=>any)|null} [callee] - Optional callee function to
+ * specify the caller. If `undefined` or `null`, tracing starts from the current
+ * caller.
  *
- * @returns {string}
- * Absolute path of the caller's directory extracted from the result of
- * [`getCallerFile`](https://github.com/mnrendra/stack-trace?tab=readme-ov-file#getcallerfile).
+ * @returns {string} Absolute path of the caller's
+ * directory.
  *
- * @throws
- * If the caller's file name is not a string or not
+ * @throws If the extracted file name is not a string or not
  * absolute.
  *
- * @see https://github.com/mnrendra/stack-trace#readme
+ * @see {@link https://github.com/mnrendra/stack-trace#getcallerdir documentation}
  */
 const getCallerDir = (
   callee?: ((...args: any) => any) | null
