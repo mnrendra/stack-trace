@@ -1,0 +1,43 @@
+name: Test
+
+on:
+  push:
+    branches-ignore:
+      - '[0-9].[0-9].x'
+      - '[0-9].x.x'
+      - '[0-9].x'
+      - main
+      - next
+      - rc
+      - beta
+      - alpha
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2 # At least fetch the last two commits for comparison
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "lts/*"
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Build Source Code
+        run: npm run build
+
+      - name: Run Test and Generate Coverage
+        run: npm test
+
+      - name: Upload Coverage Reports to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
