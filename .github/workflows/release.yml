@@ -12,21 +12,20 @@ on:
       - beta
       - alpha
 
-permissions:
-  actions: read
-  checks: read
-  contents: read
-  id-token: write
-  issues: write
-  pull-requests: read
-  security-events: write
+permissions: read-all
 
 jobs:
   release:
     name: Release
     runs-on: ubuntu-latest
     permissions:
+      actions: read
+      checks: read
       contents: write
+      id-token: write
+      issues: write
+      pull-requests: read
+      security-events: write
     strategy:
       fail-fast: false
       matrix:
