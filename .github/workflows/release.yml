@@ -15,7 +15,7 @@ on:
 permissions:
   actions: read
   checks: read
-  contents: write
+  contents: read
   id-token: write
   issues: write
   pull-requests: read
@@ -25,6 +25,8 @@ jobs:
   release:
     name: Release
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     strategy:
       fail-fast: false
       matrix:
