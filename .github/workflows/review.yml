@@ -10,8 +10,6 @@ jobs:
   review:
     name: Review
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
     steps:
 
       - name: Harden Runner # Audit all outbound calls
