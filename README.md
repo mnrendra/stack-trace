@@ -1,13 +1,27 @@
 # @mnrendra/stack-trace
 
-![version](https://img.shields.io/npm/v/@mnrendra/stack-trace)
-![types](https://img.shields.io/npm/types/@mnrendra/stack-trace)
-![size](https://img.shields.io/npm/unpacked-size/@mnrendra/stack-trace)
-![downloads](https://img.shields.io/npm/dm/@mnrendra/stack-trace)
-![license](https://img.shields.io/npm/l/@mnrendra/stack-trace)
+[![version](https://img.shields.io/npm/v/@mnrendra/stack-trace?logo=nodedotjs)](https://www.npmjs.com/package/@mnrendra/stack-trace?activeTab=versions)
+[![downloads](https://img.shields.io/npm/dm/@mnrendra/stack-trace)](https://npm-stat.com/charts.html?package=@mnrendra/stack-trace)
+[![size](https://packagephobia.now.sh/badge?p=@mnrendra/stack-trace)](https://packagephobia.com/result?p=%40mnrendra%2Fstack-trace)
+[![coverage](https://codecov.io/github/mnrendra/stack-trace/graph/badge.svg?token=LSNMMJVQ77)](https://app.codecov.io/gh/mnrendra/stack-trace)
+[![scorecard](https://api.securityscorecards.dev/projects/github.com/mnrendra/stack-trace/badge)](https://securityscorecards.dev/viewer/?uri=github.com/mnrendra/stack-trace)
+[![codeql](https://github.com/mnrendra/stack-trace/actions/workflows/security.yml/badge.svg)](https://github.com/mnrendra/stack-trace/actions/workflows/security.yml)
+[![release](https://github.com/mnrendra/stack-trace/actions/workflows/release.yml/badge.svg)](https://github.com/mnrendra/stack-trace/actions/workflows/release.yml)
+[![semantic](https://img.shields.io/badge/semantic--release-angular-e10079?logo=semantic-release)](https://github.com/mnrendra/stack-trace/commits/main)
+[![license](https://img.shields.io/npm/l/@mnrendra/stack-trace)](https://github.com/mnrendra/stack-trace/blob/main/LICENSE)
 
-A lightweight [stack trace](https://v8.dev/docs/stack-trace-api) utility to retrieve `CallSite` objects from a specific caller.<br/>
+A lightweight [stack trace](https://v8.dev/docs/stack-trace-api) utility to retrieve `CallSite` objects from a specific caller.
+
 *Useful for debugging, logging, or building tools that need to trace call origins at runtime.*
+
+## Features
+- ✅ Supports both **ES Modules** and **CommonJS** from a single source - see [package](https://www.npmjs.com/package/@mnrendra/stack-trace?activeTab=code)
+- ✅ Minified and cleansed of unnecessary dependencies, files, and attributes - see [contents](https://www.npmjs.com/package/@mnrendra/stack-trace?activeTab=code)
+- ✅ Tiny package - see [size](https://bundlephobia.com/package/@mnrendra/stack-trace)
+- ✅ Well tested - see [coverage](https://app.codecov.io/gh/mnrendra/stack-trace)
+- ✅ Verified all commits - see [signatures](https://github.com/mnrendra/stack-trace/commits/main)
+- ✅ Semantic versioning - see [commits](https://github.com/mnrendra/stack-trace/commits/main)
+- ✅ Actively maintained - [pull requests](https://github.com/mnrendra/stack-trace/pulls), [issues](https://github.com/mnrendra/stack-trace/issues), and [discussions](https://github.com/mnrendra/stack-trace/discussions) are welcome!
 
 ## Install
 ```bash
@@ -129,84 +143,6 @@ If the extracted file name is not a string or not absolute.
 
 ## Usage
 
-### CommonJS
-`/foo/callee.cjs`
-```javascript
-const { dirname } = require('node:path')
-
-const {
-  stackTrace,
-  getCallerSite,
-  extractFilePath,
-  getCallerFile,
-  getCallerDir
-} = require('@mnrendra/stack-trace')
-
-const callee = () => {
-  // `stackTrace`:
-  const [callSite1] = stackTrace()
-  const [callSite2] = stackTrace(callee, { limit: 1 }) // Pass the `callee` function as the callee.
-
-  console.log(callSite1.getFileName()) // Output: /foo/callee.cjs
-  console.log(callSite2.getFileName()) // Output: /foo/caller.cjs
-
-  console.log(callSite1.getFunctionName()) // Output: callee
-  console.log(callSite2.getFunctionName()) // Output: caller
-
-  // `getCallerSite`:
-  const callerSite1 = getCallerSite()
-  const callerSite2 = getCallerSite(callee) // Pass the `callee` function as the callee.
-
-  console.log(callerSite1.getFileName() === callSite1.getFileName()) // Output: true
-  console.log(callerSite2.getFileName() === callSite2.getFileName()) // Output: true
-
-  console.log(callerSite1.getFileName()) // Output: /foo/callee.cjs
-  console.log(callerSite2.getFileName()) // Output: /foo/caller.cjs
-
-  console.log(callerSite1.getFunctionName() === callSite1.getFunctionName()) // Output: true
-  console.log(callerSite2.getFunctionName() === callSite2.getFunctionName()) // Output: true
-
-  console.log(callerSite1.getFunctionName()) // Output: callee
-  console.log(callerSite2.getFunctionName()) // Output: caller
-
-  // `extractFilePath`:
-  const filePath1 = extractFilePath(callerSite1)
-  const filePath2 = extractFilePath(callerSite2)
-
-  console.log(filePath1) // Output: /foo/callee.cjs
-  console.log(filePath2) // Output: /foo/caller.cjs
-
-  // `getCallerFile`:
-  const callerFile1 = getCallerFile()
-  const callerFile2 = getCallerFile(callee) // Pass the `callee` function as the callee.
-
-  console.log(callerFile1 === filePath1) // Output: true
-  console.log(callerFile2 === filePath2) // Output: true
-
-  console.log(callerFile1) // Output: /foo/callee.cjs
-  console.log(callerFile2) // Output: /foo/caller.cjs
-
-  // `getCallerDir`:
-  const callerDir1 = getCallerDir()
-  const callerDir2 = getCallerDir(callee) // Pass the `callee` function as the callee.
-
-  console.log(callerDir1 === dirname(filePath1)) // Output: true
-  console.log(callerDir2 === dirname(filePath2)) // Output: true
-
-  console.log(callerDir1) // Output: /foo
-  console.log(callerDir2) // Output: /foo
-}
-
-module.exports = callee
-```
-
-`/foo/caller.cjs`
-```javascript
-const callee = require('./callee.cjs')
-const caller = () => callee()
-caller()
-```
-
 ### ES Modules
 `/foo/callee.mjs`
 ```javascript
@@ -281,6 +217,84 @@ export default callee
 `/foo/caller.mjs`
 ```javascript
 import callee from './callee.mjs'
+const caller = () => callee()
+caller()
+```
+
+### CommonJS
+`/foo/callee.cjs`
+```javascript
+const { dirname } = require('node:path')
+
+const {
+  stackTrace,
+  getCallerSite,
+  extractFilePath,
+  getCallerFile,
+  getCallerDir
+} = require('@mnrendra/stack-trace')
+
+const callee = () => {
+  // `stackTrace`:
+  const [callSite1] = stackTrace()
+  const [callSite2] = stackTrace(callee, { limit: 1 }) // Pass the `callee` function as the callee.
+
+  console.log(callSite1.getFileName()) // Output: /foo/callee.cjs
+  console.log(callSite2.getFileName()) // Output: /foo/caller.cjs
+
+  console.log(callSite1.getFunctionName()) // Output: callee
+  console.log(callSite2.getFunctionName()) // Output: caller
+
+  // `getCallerSite`:
+  const callerSite1 = getCallerSite()
+  const callerSite2 = getCallerSite(callee) // Pass the `callee` function as the callee.
+
+  console.log(callerSite1.getFileName() === callSite1.getFileName()) // Output: true
+  console.log(callerSite2.getFileName() === callSite2.getFileName()) // Output: true
+
+  console.log(callerSite1.getFileName()) // Output: /foo/callee.cjs
+  console.log(callerSite2.getFileName()) // Output: /foo/caller.cjs
+
+  console.log(callerSite1.getFunctionName() === callSite1.getFunctionName()) // Output: true
+  console.log(callerSite2.getFunctionName() === callSite2.getFunctionName()) // Output: true
+
+  console.log(callerSite1.getFunctionName()) // Output: callee
+  console.log(callerSite2.getFunctionName()) // Output: caller
+
+  // `extractFilePath`:
+  const filePath1 = extractFilePath(callerSite1)
+  const filePath2 = extractFilePath(callerSite2)
+
+  console.log(filePath1) // Output: /foo/callee.cjs
+  console.log(filePath2) // Output: /foo/caller.cjs
+
+  // `getCallerFile`:
+  const callerFile1 = getCallerFile()
+  const callerFile2 = getCallerFile(callee) // Pass the `callee` function as the callee.
+
+  console.log(callerFile1 === filePath1) // Output: true
+  console.log(callerFile2 === filePath2) // Output: true
+
+  console.log(callerFile1) // Output: /foo/callee.cjs
+  console.log(callerFile2) // Output: /foo/caller.cjs
+
+  // `getCallerDir`:
+  const callerDir1 = getCallerDir()
+  const callerDir2 = getCallerDir(callee) // Pass the `callee` function as the callee.
+
+  console.log(callerDir1 === dirname(filePath1)) // Output: true
+  console.log(callerDir2 === dirname(filePath2)) // Output: true
+
+  console.log(callerDir1) // Output: /foo
+  console.log(callerDir2) // Output: /foo
+}
+
+module.exports = callee
+```
+
+`/foo/caller.cjs`
+```javascript
+const callee = require('./callee.cjs')
 const caller = () => callee()
 caller()
 ```

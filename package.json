@@ -8,7 +8,7 @@
   "scripts": {
     "build": "rm -rf dist && npx rollup -c",
     "commit": "npx cz",
-    "test": "jest"
+    "test": "npx jest --coverage"
   },
   "repository": {
     "type": "git",
@@ -28,7 +28,7 @@
     "@semantic-release/exec": "^7.0.3",
     "@semantic-release/git": "^10.0.1",
     "@types/jest": "^29.5.14",
-    "@types/node": "^22.15.2",
+    "@types/node": "^22.15.3",
     "@typescript-eslint/eslint-plugin": "^6.21.0",
     "clean-package": "^2.2.0",
     "cz-conventional-changelog": "^3.3.0",
@@ -38,7 +38,7 @@
     "eslint-plugin-n": "^16.6.2",
     "eslint-plugin-promise": "^6.6.0",
     "jest": "^29.7.0",
-    "rollup": "^4.40.0",
+    "rollup": "^4.40.1",
     "rollup-plugin-dts": "^6.2.1",
     "rollup-plugin-esbuild": "^6.2.1",
     "semantic-release": "^24.2.3",
