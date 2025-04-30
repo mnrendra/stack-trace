@@ -1,16 +1,7 @@
 name: Security
 
 on:
-  push:
-    branches-ignore:
-      - '[0-9].[0-9].x'
-      - '[0-9].x.x'
-      - '[0-9].x'
-      - main
-      - next
-      - rc
-      - beta
-      - alpha
+  pull_request:
 
 jobs:
   security:

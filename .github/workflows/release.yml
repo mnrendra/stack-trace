@@ -47,41 +47,6 @@ jobs:
       - name: Build Source Code
         run: npm run build
 
-      - name: Run Test and Generate Coverage
-        run: npm test
-
-      - name: Upload Coverage Reports to Codecov
-        uses: codecov/codecov-action@v5
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@v3
-        with:
-          languages: ${{ matrix.language }}
-
-      - name: Analyze CodeQL
-        uses: github/codeql-action/analyze@v3
-
-      - name: Analyze OSSF Scorecard
-        uses: ossf/scorecard-action@v2.4.1
-        with:
-          results_file: ossf_scorecard.sarif
-          results_format: sarif
-          repo_token: ${{ secrets.TOKEN }}
-          publish_results: true
-
-      - name: Upload to GitHub Actions Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: OSSF Scorecard
-          path: ossf_scorecard.sarif
-
-      - name: Upload to GitHub Code Scanning
-        uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: ossf_scorecard.sarif
-
       - name: Release and Publish to NPM
         env:
           GIT_AUTHOR_NAME: ${{ vars.GIT_AUTHOR_NAME }}
@@ -92,7 +57,7 @@ jobs:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: npx semantic-release
 
-      - name: Rebase to 'dev'
+      - name: Rebase Development Branch
         run: |
           git checkout dev
           git pull --rebase origin main
