@@ -1,29 +1,20 @@
-name: Release
+name: Security
 
 on:
-  push:
-    branches:
-      - '[0-9].[0-9].x'
-      - '[0-9].x.x'
-      - '[0-9].x'
-      - main
-      - next
-      - rc
-      - beta
-      - alpha
+  pull_request:
 
 permissions: read-all
 
 jobs:
-  release:
-    name: Release
+  security:
+    name: Security
     runs-on: ubuntu-latest
     permissions:
       actions: read
       checks: read
-      contents: write
+      contents: read
       id-token: write
-      issues: write
+      issues: read
       pull-requests: read
       security-events: write
     strategy:
@@ -40,17 +31,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
-          fetch-depth: 0
           persist-credentials: false
           token: ${{ secrets.TOKEN }}
-
-      - name: Import GPG
-        uses: crazy-max/ghaction-import-gpg@e89d40939c28e39f97cf32126055eeae86ba74ec # v6.3.0
-        with:
-          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
-          passphrase: ${{ secrets.PASSPHRASE }}
-          git_user_signingkey: true
-          git_commit_gpgsign: true
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@28deaeda66b76a05916b6923827895f2b14ab387 # v3.28.16
@@ -67,14 +49,6 @@ jobs:
 
       - name: Build Source Code
         run: npm run build
-
-      - name: Run Test and Generate Coverage
-        run: npm test
-
-      - name: Upload Coverage Reports to Codecov
-        uses: codecov/codecov-action@ad3126e916f78f00edff4ed0317cf185271ccc2d # v5.4.2
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
 
       - name: Analyze CodeQL
         uses: github/codeql-action/analyze@28deaeda66b76a05916b6923827895f2b14ab387 # v3.28.16
@@ -100,19 +74,3 @@ jobs:
         uses: github/codeql-action/upload-sarif@28deaeda66b76a05916b6923827895f2b14ab387 # v3.28.16
         with:
           sarif_file: ossf_scorecard.sarif
-
-      - name: Release and Publish to NPM
-        env:
-          GIT_AUTHOR_NAME: ${{ vars.GIT_AUTHOR_NAME }}
-          GIT_AUTHOR_EMAIL: ${{ vars.GIT_AUTHOR_EMAIL }}
-          GIT_COMMITTER_NAME: ${{ vars.GIT_COMMITTER_NAME }}
-          GIT_COMMITTER_EMAIL: ${{ vars.GIT_COMMITTER_EMAIL }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npx semantic-release
-
-      - name: Rebase Development Branch
-        run: |
-          git checkout dev
-          git pull --rebase origin main
-          git push --force origin dev
