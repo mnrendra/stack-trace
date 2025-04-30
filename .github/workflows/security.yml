@@ -45,6 +45,7 @@ jobs:
         with:
           name: OSSF Scorecard
           path: ossf_scorecard.sarif
+          overwrite: true
 
       - name: Upload to GitHub Code Scanning
         uses: github/codeql-action/upload-sarif@v3
