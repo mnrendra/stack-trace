@@ -42,7 +42,7 @@ jobs:
         uses: github/codeql-action/analyze@v3
 
       - name: Analyze OSSF Scorecard
-        uses: ossf/scorecard-action@v2
+        uses: ossf/scorecard-action@v2.4.1
         with:
           results_file: ossf_scorecard.sarif
           results_format: sarif
