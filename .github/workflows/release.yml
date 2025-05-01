@@ -158,7 +158,6 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           fetch-depth: 0 # All commits need to be analyzed
-          persist-credentials: false
           token: ${{ secrets.TOKEN }}
       # Import GPG
       - name: Import GPG
