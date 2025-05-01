@@ -12,67 +12,100 @@ on:
       - beta
       - alpha
 
-permissions: read-all
+permissions:
+  contents: read
 
 jobs:
-  pre-release:
-    name: Pre Release
+  # Review
+  review:
+    name: Review
     runs-on: ubuntu-latest
-    permissions:
-      actions: read
-      checks: read
-      contents: read
-      id-token: write
-      issues: read
-      pull-requests: read
-      security-events: write
-    strategy:
-      fail-fast: false
-      matrix:
-        language: [javascript]
     steps:
-
+      # Harden Runner
       - name: Harden Runner # Audit all outbound calls
         uses: step-security/harden-runner@0634a2670c59f64b4a01f0f96f84700a4088b9f0 # v2.12.0
         with:
           egress-policy: audit
-
+      # Checkout
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
-          fetch-depth: 0
           persist-credentials: false
-          token: ${{ secrets.TOKEN }}
-
+      # Dependency Review
+      - name: Dependency Review
+        uses: actions/dependency-review-action@ce3cf9537a52e8119d91fd484ab5b8a807627bf8 # v4.6.0
+  # CodeQL
+  codeql:
+    name: CodeQL
+    runs-on: ubuntu-latest
+    permissions:
+      # read
+      actions: read
+      contents: read
+      # write
+      security-events: write
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [javascript, typescript]
+    steps:
+      # Harden Runner
+      - name: Harden Runner # Audit all outbound calls
+        uses: step-security/harden-runner@0634a2670c59f64b4a01f0f96f84700a4088b9f0 # v2.12.0
+        with:
+          egress-policy: audit
+      # Checkout
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      # Initialize CodeQL
       - name: Initialize CodeQL
         uses: github/codeql-action/init@28deaeda66b76a05916b6923827895f2b14ab387 # v3.28.16
         with:
           languages: ${{ matrix.language }}
-
+      # Setup Node
       - name: Setup Node
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: "lts/*"
-
+      # Install Dependencies
       - name: Install Dependencies
         run: npm ci
-
+      # Build Source Code
       - name: Build Source Code
         run: npm run build
-
-      - name: Run Test and Generate Coverage
-        run: npm test
-
-      - name: Upload Coverage Reports to Codecov
-        uses: codecov/codecov-action@ad3126e916f78f00edff4ed0317cf185271ccc2d # v5.4.2
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-
+      # Analyze CodeQL
       - name: Analyze CodeQL
         uses: github/codeql-action/analyze@28deaeda66b76a05916b6923827895f2b14ab387 # v3.28.16
         with:
           category: /language:${{ matrix.language }}
-
+  # Scorecard
+  scorecard:
+    name: Scorecard
+    runs-on: ubuntu-latest
+    permissions:
+      # read
+      actions: read
+      checks: read
+      contents: read
+      issues: read
+      pull-requests: read
+      # write
+      id-token: write
+      security-events: write
+    steps:
+      # Harden Runner
+      - name: Harden Runner # Audit all outbound calls
+        uses: step-security/harden-runner@0634a2670c59f64b4a01f0f96f84700a4088b9f0 # v2.12.0
+        with:
+          egress-policy: audit
+      # Checkout
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      # Analyze OSSF Scorecard
       - name: Analyze OSSF Scorecard
         uses: ossf/scorecard-action@f49aabe0b5af0936a0987cfb85d86b75731b0186 # v2.4.1
         with:
@@ -80,28 +113,80 @@ jobs:
           results_format: sarif
           publish_results: true
           repo_token: ${{ secrets.TOKEN }}
-
+      # Upload to GitHub Actions Artifact
       - name: Upload to GitHub Actions Artifact
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: OSSF Scorecard
           path: ossf_scorecard.sarif
           overwrite: true
-
+      # Upload to GitHub Code Scanning
       - name: Upload to GitHub Code Scanning
         uses: github/codeql-action/upload-sarif@28deaeda66b76a05916b6923827895f2b14ab387 # v3.28.16
         with:
           sarif_file: ossf_scorecard.sarif
-
+  # Test
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      # Harden Runner
+      - name: Harden Runner # Audit all outbound calls
+        uses: step-security/harden-runner@0634a2670c59f64b4a01f0f96f84700a4088b9f0 # v2.12.0
+        with:
+          egress-policy: audit
+      # Checkout
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 2 # At least fetch the last two commits for comparison
+          persist-credentials: false
+      # Setup Node
+      - name: Setup Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: "lts/*"
+      # Install Dependencies
+      - name: Install Dependencies
+        run: npm ci
+      # Build Source Code
+      - name: Build Source Code
+        run: npm run build
+      # Run Test and Generate Coverage
+      - name: Run Test and Generate Coverage
+        run: npm test
+      # Upload Coverage Reports to Codecov
+      - name: Upload Coverage Reports to Codecov
+        uses: codecov/codecov-action@ad3126e916f78f00edff4ed0317cf185271ccc2d # v5.4.2
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+  # Release
   release:
     name: Release
-    needs: pre-release
+    needs:
+      review:
+      codeql:
+      scorecard:
+      test:
     runs-on: ubuntu-latest
     permissions:
+      # write
       contents: write
       issues: write
     steps:
-
+      # Harden Runner
+      - name: Harden Runner # Audit all outbound calls
+        uses: step-security/harden-runner@0634a2670c59f64b4a01f0f96f84700a4088b9f0 # v2.12.0
+        with:
+          egress-policy: audit
+      # Checkout
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0 # All commits need to be analyzed
+          persist-credentials: false
+          token: ${{ secrets.TOKEN }}
+      # Import GPG
       - name: Import GPG
         uses: crazy-max/ghaction-import-gpg@e89d40939c28e39f97cf32126055eeae86ba74ec # v6.3.0
         with:
@@ -109,7 +194,18 @@ jobs:
           passphrase: ${{ secrets.PASSPHRASE }}
           git_user_signingkey: true
           git_commit_gpgsign: true
-
+      # Setup Node
+      - name: Setup Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: "lts/*"
+      # Install Dependencies
+      - name: Install Dependencies
+        run: npm ci
+      # Build Source Code
+      - name: Build Source Code
+        run: npm run build
+      # Release and Publish to NPM
       - name: Release and Publish to NPM
         env:
           GIT_AUTHOR_NAME: ${{ vars.GIT_AUTHOR_NAME }}
@@ -119,7 +215,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: npx semantic-release
-
+      # Rebase Development Branch
       - name: Rebase Development Branch
         run: |
           git checkout dev
