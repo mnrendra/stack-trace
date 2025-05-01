@@ -17,10 +17,6 @@ jobs:
       contents: read
       # write
       security-events: write
-    strategy:
-      fail-fast: false
-      matrix:
-        language: [javascript, typescript]
     steps:
       # Harden Runner
       - name: Harden Runner # Audit all outbound calls
@@ -36,7 +32,7 @@ jobs:
       - name: Initialize CodeQL
         uses: github/codeql-action/init@28deaeda66b76a05916b6923827895f2b14ab387 # v3.28.16
         with:
-          languages: ${{ matrix.language }}
+          languages: javascript
       # Setup Node
       - name: Setup Node
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
@@ -52,7 +48,7 @@ jobs:
       - name: Analyze CodeQL
         uses: github/codeql-action/analyze@28deaeda66b76a05916b6923827895f2b14ab387 # v3.28.16
         with:
-          category: /language:${{ matrix.language }}
+          category: /language:javascript
   # Scorecard
   scorecard:
     name: Scorecard
