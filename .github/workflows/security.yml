@@ -3,58 +3,82 @@ name: Security
 on:
   pull_request:
 
-permissions: read-all
+permissions:
+  contents: read
 
 jobs:
-  security:
-    name: Security
+  # CodeQL
+  codeql:
+    name: CodeQL
     runs-on: ubuntu-latest
     permissions:
+      # read
       actions: read
-      checks: read
       contents: read
-      id-token: write
-      issues: read
-      pull-requests: read
+      # write
       security-events: write
     strategy:
       fail-fast: false
       matrix:
-        language: [javascript]
+        language: [javascript, typescript]
     steps:
-
+      # Harden Runner
       - name: Harden Runner # Audit all outbound calls
         uses: step-security/harden-runner@0634a2670c59f64b4a01f0f96f84700a4088b9f0 # v2.12.0
         with:
           egress-policy: audit
-
+      # Checkout
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           persist-credentials: false
-          token: ${{ secrets.TOKEN }}
-
+      # Initialize CodeQL
       - name: Initialize CodeQL
         uses: github/codeql-action/init@28deaeda66b76a05916b6923827895f2b14ab387 # v3.28.16
         with:
           languages: ${{ matrix.language }}
-
+      # Setup Node
       - name: Setup Node
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: "lts/*"
-
+      # Install Dependencies
       - name: Install Dependencies
         run: npm ci
-
+      # Build Source Code
       - name: Build Source Code
         run: npm run build
-
+      # Analyze CodeQL
       - name: Analyze CodeQL
         uses: github/codeql-action/analyze@28deaeda66b76a05916b6923827895f2b14ab387 # v3.28.16
         with:
           category: /language:${{ matrix.language }}
-
+  # Scorecard
+  scorecard:
+    name: Scorecard
+    runs-on: ubuntu-latest
+    permissions:
+      # read
+      actions: read
+      checks: read
+      contents: read
+      issues: read
+      pull-requests: read
+      # write
+      id-token: write
+      security-events: write
+    steps:
+      # Harden Runner
+      - name: Harden Runner # Audit all outbound calls
+        uses: step-security/harden-runner@0634a2670c59f64b4a01f0f96f84700a4088b9f0 # v2.12.0
+        with:
+          egress-policy: audit
+      # Checkout
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      # Analyze OSSF Scorecard
       - name: Analyze OSSF Scorecard
         uses: ossf/scorecard-action@f49aabe0b5af0936a0987cfb85d86b75731b0186 # v2.4.1
         with:
@@ -62,14 +86,14 @@ jobs:
           results_format: sarif
           publish_results: true
           repo_token: ${{ secrets.TOKEN }}
-
+      # Upload to GitHub Actions Artifact
       - name: Upload to GitHub Actions Artifact
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: OSSF Scorecard
           path: ossf_scorecard.sarif
           overwrite: true
-
+      # Upload to GitHub Code Scanning
       - name: Upload to GitHub Code Scanning
         uses: github/codeql-action/upload-sarif@28deaeda66b76a05916b6923827895f2b14ab387 # v3.28.16
         with:
