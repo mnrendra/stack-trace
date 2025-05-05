@@ -30,7 +30,7 @@
     "@semantic-release/git": "^10.0.1",
     "@types/jest": "^29.5.14",
     "@types/node": "^22.15.3",
-    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/eslint-plugin": "^8.32.0",
     "clean-package": "^2.2.0",
     "cz-conventional-changelog": "^3.3.0",
     "eslint": "^8.57.1",
