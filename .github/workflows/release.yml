@@ -26,7 +26,7 @@ jobs:
       packages: read
       # write
       security-events: write
-    uses: ./.github/workflows/reusable.codeql
+    uses: ./.github/workflows/reusable.codeql.yml
   # Scorecard
   scorecard:
     name: Scorecard
@@ -40,11 +40,11 @@ jobs:
       # write
       id-token: write
       security-events: write
-    uses: ./.github/workflows/reusable.scorecard
+    uses: ./.github/workflows/reusable.scorecard.yml
   # Test
   test:
     name: Test
-    uses: ./.github/workflows/reusable.test
+    uses: ./.github/workflows/reusable.test.yml
     secrets:
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
   # Release
@@ -56,7 +56,7 @@ jobs:
       contents: write
       issues: write
       pull-requests: write
-    uses: ./.github/workflows/reusable.release
+    uses: ./.github/workflows/reusable.release.yml
     secrets:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}

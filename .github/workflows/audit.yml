@@ -19,7 +19,7 @@ jobs:
       packages: read
       # write
       security-events: write
-    uses: ./.github/workflows/reusable.codeql
+    uses: ./.github/workflows/reusable.codeql.yml
   # Scorecard
   scorecard:
     name: Scorecard
@@ -33,4 +33,4 @@ jobs:
       # write
       id-token: write
       security-events: write
-    uses: ./.github/workflows/reusable.scorecard
+    uses: ./.github/workflows/reusable.scorecard.yml
