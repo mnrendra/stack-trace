@@ -3,8 +3,6 @@ name: Test
 on:
   workflow_call:
     secrets:
-      GITHUB_TOKEN:
-        required: true
       GPG_PRIVATE_KEY:
         required: true
       NPM_TOKEN:

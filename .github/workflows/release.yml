@@ -58,7 +58,6 @@ jobs:
       pull-requests: write
     uses: ./.github/workflows/reusable.release.yml
     secrets:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       PASSPHRASE: ${{ secrets.PASSPHRASE }}
