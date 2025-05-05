@@ -1,0 +1,36 @@
+name: Audit
+
+on:
+  branch_protection_rule:
+  schedule:
+    - cron: '0 17 * * 5' # Every Friday at 17:00 UTC (Saturday 00:00 Jakarta time)
+
+permissions:
+  contents: read
+
+jobs:
+  # CodeQL
+  codeql:
+    name: CodeQL
+    permissions:
+      # read
+      actions: read
+      contents: read
+      packages: read
+      # write
+      security-events: write
+    uses: ./.github/workflows/reusable.codeql.yml
+  # Scorecard
+  scorecard:
+    name: Scorecard
+    permissions:
+      # read
+      actions: read
+      checks: read
+      contents: read
+      issues: read
+      pull-requests: read
+      # write
+      id-token: write
+      security-events: write
+    uses: ./.github/workflows/reusable.scorecard.yml
