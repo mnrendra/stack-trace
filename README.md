@@ -19,9 +19,10 @@ A lightweight [stack trace](https://v8.dev/docs/stack-trace-api) utility to retr
 - ✅ Minified and cleansed of unnecessary dependencies, files, and attributes - see [contents](https://www.npmjs.com/package/@mnrendra/stack-trace?activeTab=code)
 - ✅ Tiny package - see [size](https://bundlephobia.com/package/@mnrendra/stack-trace)
 - ✅ Well tested - see [coverage](https://app.codecov.io/gh/mnrendra/stack-trace)
+- ✅ Security checked - see [scorecard](https://securityscorecards.dev/viewer/?uri=github.com/mnrendra/stack-trace)
 - ✅ Verified all commits - see [signatures](https://github.com/mnrendra/stack-trace/commits/main)
 - ✅ Semantic versioning - see [commits](https://github.com/mnrendra/stack-trace/commits/main)
-- ✅ Actively maintained - [pull requests](https://github.com/mnrendra/stack-trace/pulls), [issues](https://github.com/mnrendra/stack-trace/issues), and [discussions](https://github.com/mnrendra/stack-trace/discussions) are welcome!
+- ✅ Actively maintained - [pull requests](https://github.com/mnrendra/stack-trace/pulls), [issues](https://github.com/mnrendra/stack-trace/issues), [discussions](https://github.com/mnrendra/stack-trace/discussions), and [contributions](https://github.com/mnrendra/stack-trace/blob/HEAD/CONTRIBUTING.md) are welcome!
 
 ## Install
 ```bash
@@ -75,7 +76,7 @@ NodeJS.CallSite
 First `CallSite` object captured in the stack trace.
 
 ### `extractFilePath`
-Extracts the file name from a `CallSite` object and converts it to a file path if the value is a file URL.<br/>
+Extracts the file name from a `CallSite` object and converts it to a file path if the value is a file URL.  
 *This utility ensures that the returned value is an absolute path.*
 
 #### Type
@@ -301,10 +302,10 @@ caller()
 
 > **Note**:
 >
-> - In ES Modules, `getFileName` returns a **file URL** (e.g., `file:///foo`), instead of a **file path** (`/foo`).<br/>
+> - In ES Modules, `getFileName` returns a **file URL** (e.g., `file:///foo`), instead of a **file path** (`/foo`).  
 > *To convert it to a file path, use either `url.fileURLToPath` or the `extractFilePath` utility.*
 >
-> - By default `stackTrace` will capture all caller's frames.<br/>
+> - By default `stackTrace` will capture all caller's frames.  
 > *To capture only a specific number of frames, set the `limit` option to a positive number.*
 
 ### Examples
@@ -423,6 +424,18 @@ const caller = (): NodeJS.CallSite[] => stackTrace(caller, options)
 const callSites = caller()
 console.log(callSites.length) // Output: 1
 ```
+
+## Security
+
+We take security seriously in this project. If you discover a **vulnerability**, we strongly encourage you to report it in a responsible manner.
+
+Please open a [Security Advisory](https://github.com/mnrendra/stack-trace/security/advisories/new) to report any vulnerabilities.
+
+For more information, please refer to our [Security Policy](https://github.com/mnrendra/stack-trace/blob/HEAD/SECURITY.md).
+
+## Contributing
+
+We appreciate your help in making this project better. Please follow the [guidelines](https://github.com/mnrendra/stack-trace/blob/HEAD/CONTRIBUTING.md) to ensure that your contributions are smoothly integrated.
 
 ## License
 [MIT](https://github.com/mnrendra/stack-trace/blob/HEAD/LICENSE)

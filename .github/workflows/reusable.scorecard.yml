@@ -1,54 +1,12 @@
-name: Security
+name: Scorecard
 
 on:
-  pull_request:
+  workflow_call:
 
 permissions:
   contents: read
 
 jobs:
-  # CodeQL
-  codeql:
-    name: CodeQL
-    runs-on: ubuntu-latest
-    permissions:
-      # read
-      actions: read
-      contents: read
-      # write
-      security-events: write
-    steps:
-      # Harden Runner
-      - name: Harden Runner # Audit all outbound calls
-        uses: step-security/harden-runner@0634a2670c59f64b4a01f0f96f84700a4088b9f0 # v2.12.0
-        with:
-          egress-policy: audit
-      # Checkout
-      - name: Checkout
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-        with:
-          persist-credentials: false
-      # Initialize CodeQL
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@28deaeda66b76a05916b6923827895f2b14ab387 # v3.28.16
-        with:
-          languages: javascript
-      # Setup Node
-      - name: Setup Node
-        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
-        with:
-          node-version: "lts/*"
-      # Install Dependencies
-      - name: Install Dependencies
-        run: npm ci
-      # Build Source Code
-      - name: Build Source Code
-        run: npm run build
-      # Analyze CodeQL
-      - name: Analyze CodeQL
-        uses: github/codeql-action/analyze@28deaeda66b76a05916b6923827895f2b14ab387 # v3.28.16
-        with:
-          category: /language:javascript
   # Scorecard
   scorecard:
     name: Scorecard
@@ -81,7 +39,6 @@ jobs:
           results_file: ossf_scorecard.sarif
           results_format: sarif
           publish_results: true
-          repo_token: ${{ secrets.TOKEN }}
       # Upload to GitHub Actions Artifact
       - name: Upload to GitHub Actions Artifact
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
