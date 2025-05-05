@@ -2,10 +2,8 @@
 __tests__/
 .github/
 coverage/
-# dist/*.map
 node_modules/
 package/
-dummies/
 src/
 tests/
 .czrc*
@@ -13,10 +11,14 @@ tests/
 .gitignore
 .npmignore
 .npmrc
+.pre-commit-config*
 .releaserc*
 clean-package.config*
+CODE_OF_CONDUCT*
+CONTRIBUTING*
 jest.config*
 package-lock.json
 package.json.backup
 rollup.config*
+SECURITY*
 tsconfig.json

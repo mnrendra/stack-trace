@@ -1,21 +1,16 @@
-name: Release
+name: Checkpoint
 
 on:
-  push:
-    branches:
-      - '[0-9].[0-9].x'
-      - '[0-9].x.x'
-      - '[0-9].x'
-      - main
-      - next
-      - rc
-      - beta
-      - alpha
+  pull_request:
 
 permissions:
   contents: read
 
 jobs:
+  # Review
+  review:
+    name: Review
+    uses: ./.github/workflows/reusable.review.yml
   # CodeQL
   codeql:
     name: CodeQL
@@ -47,19 +42,3 @@ jobs:
     uses: ./.github/workflows/reusable.test.yml
     secrets:
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-  # Release
-  release:
-    name: Release
-    needs: [codeql, scorecard, test]
-    permissions:
-      # write
-      contents: write
-      id-token: write
-      issues: write
-      pull-requests: write
-    uses: ./.github/workflows/reusable.release.yml
-    secrets:
-      GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
-      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-      PASSPHRASE: ${{ secrets.PASSPHRASE }}
-      TOKEN: ${{ secrets.TOKEN }}

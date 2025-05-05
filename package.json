@@ -8,7 +8,8 @@
   "scripts": {
     "build": "rm -rf dist && npx rollup -c",
     "commit": "npx cz",
-    "test": "npx jest --coverage"
+    "security": "scorecard --local .",
+    "test": "npm run build && npx jest --coverage"
   },
   "repository": {
     "type": "git",
