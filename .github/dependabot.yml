@@ -8,6 +8,7 @@ updates:
       interval: weekly
     commit-message:
       prefix: chore(actions)
+
   # npm
   - package-ecosystem: npm
     directory: /
@@ -15,3 +16,10 @@ updates:
       interval: weekly
     commit-message:
       prefix: chore(npm)
+    ignore:
+      - dependency-name: '@typescript-eslint/eslint-plugin'
+      - dependency-name: 'eslint'
+      - dependency-name: 'eslint-config-standard-with-typescript'
+      - dependency-name: 'eslint-plugin-import'
+      - dependency-name: 'eslint-plugin-n'
+      - dependency-name: 'eslint-plugin-promise"'
