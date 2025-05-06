@@ -20,23 +20,28 @@ jobs:
         uses: step-security/harden-runner@0634a2670c59f64b4a01f0f96f84700a4088b9f0 # v2.12.0
         with:
           egress-policy: audit
+
       # Checkout
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           fetch-depth: 2 # At least fetch the last two commits for comparison
           persist-credentials: false
+
       # Setup Node
       - name: Setup Node
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: lts/*
+
       # Clean Install
       - name: Clean Install
         run: npm ci
+
       # Run Test and Generate Coverage
       - name: Run Test and Generate Coverage
         run: npm test
+
       # Upload Coverage Reports to Codecov
       - name: Upload Coverage Reports to Codecov
         uses: codecov/codecov-action@ad3126e916f78f00edff4ed0317cf185271ccc2d # v5.4.2

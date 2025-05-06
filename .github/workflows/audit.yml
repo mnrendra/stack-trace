@@ -20,6 +20,7 @@ jobs:
       # write
       security-events: write
     uses: ./.github/workflows/reusable.codeql.yml
+
   # Scorecard
   scorecard:
     name: Scorecard

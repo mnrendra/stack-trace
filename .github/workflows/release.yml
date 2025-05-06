@@ -27,6 +27,7 @@ jobs:
       # write
       security-events: write
     uses: ./.github/workflows/reusable.codeql.yml
+
   # Scorecard
   scorecard:
     name: Scorecard
@@ -41,12 +42,14 @@ jobs:
       id-token: write
       security-events: write
     uses: ./.github/workflows/reusable.scorecard.yml
+
   # Test
   test:
     name: Test
     uses: ./.github/workflows/reusable.test.yml
     secrets:
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
   # Release
   release:
     name: Release

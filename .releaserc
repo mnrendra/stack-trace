@@ -39,6 +39,7 @@
     }],
     ["@semantic-release/exec", {
       "prepareCmd": "npx clean-package",
+      "publishCmd": "ls -laihs && echo \"${process.env.GITHUB_REPOSITORY}\" && echo \"v${nextRelease.version}\" && echo \"v${nextRelease.name}\" && git tag -s v${nextRelease.version} -m \"release: v${nextRelease.version}\" && git push origin v${nextRelease.version}",
       "successCmd": "npx clean-package restore"
     }]
   ]

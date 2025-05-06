@@ -11,6 +11,7 @@ jobs:
   review:
     name: Review
     uses: ./.github/workflows/reusable.review.yml
+
   # CodeQL
   codeql:
     name: CodeQL
@@ -22,6 +23,7 @@ jobs:
       # write
       security-events: write
     uses: ./.github/workflows/reusable.codeql.yml
+
   # Scorecard
   scorecard:
     name: Scorecard
@@ -36,6 +38,7 @@ jobs:
       id-token: write
       security-events: write
     uses: ./.github/workflows/reusable.scorecard.yml
+
   # Test
   test:
     name: Test
