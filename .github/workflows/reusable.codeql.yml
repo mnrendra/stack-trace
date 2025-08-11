@@ -33,7 +33,7 @@ jobs:
 
       # Initialize CodeQL
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@28deaeda66b76a05916b6923827895f2b14ab387 # v3.28.16
+        uses: github/codeql-action/init@76621b61decf072c1cee8dd1ce2d2a82d33c17ed # v3.29.8
         with:
           languages: javascript
 
@@ -53,6 +53,6 @@ jobs:
 
       # Analyze CodeQL
       - name: Analyze CodeQL
-        uses: github/codeql-action/analyze@28deaeda66b76a05916b6923827895f2b14ab387 # v3.28.16
+        uses: github/codeql-action/analyze@76621b61decf072c1cee8dd1ce2d2a82d33c17ed # v3.29.8
         with:
           category: /language:javascript
